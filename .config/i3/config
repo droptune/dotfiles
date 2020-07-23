@@ -25,6 +25,9 @@ exec --no-startup-id nitrogen --restore &
 
 exec_always --no-startup-id $HOME/.config/polybar/launch.sh
 
+# Enable workspace-names-daemon
+exec_always --no-startup-id exec i3-workspace-names-daemon
+
 # smart borders for i3gaps
 smart_borders on
 
