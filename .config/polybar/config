@@ -379,14 +379,14 @@ animation-charging-1 = "  "
 animation-charging-2 = "  "
 animation-charging-foreground = ${colors.foreground}
 animation-charging-background = ${colors.ramp7}
-animation-charging-framerate = 2000
+animation-charging-framerate = 6000
 
 animation-discharging-0 = "  "
 animation-discharging-1 = "  "
 animation-discharging-2 = "  "
 animation-discharging-foreground = ${colors.foreground}
 animation-discharging-background = ${colors.ramp7}
-animation-discharging-framerate = 2000
+animation-discharging-framerate = 6000
 
 [module/temperature]
 type = internal/temperature

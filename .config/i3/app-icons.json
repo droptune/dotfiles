@@ -13,5 +13,8 @@
     "clementine": "music",
     "vlc": "play",
     "signal": "comment",
+    "Emacs": "file-alt",
+    "KeePass2": "key",
+    "Gnome-calculator": "calculator",
     "_no_match": "question"
 }
