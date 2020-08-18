@@ -297,10 +297,12 @@ type = internal/pulseaudio
 
 format-volume = <label-volume>
 label-volume = "  %percentage%% "
+label-volume-underline = ${colors.ramp4}
 label-volume-foreground = ${colors.foreground-light}
 label-volume-background = ${colors.ramp3}
 
 label-muted = "  "
+label-muted-underline = ${colors.ramp4}
 label-muted-font = 5
 label-muted-foreground = ${colors.foreground-light}
 label-muted-background = ${colors.ramp3}
