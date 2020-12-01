@@ -1,6 +1,7 @@
 {
     "chrome": "chrome",
     "chromium-browser": "chrome",
+    "Chromium": "chrome",
     "clementine": "music",
     "Com.github.babluboy.bookworm": "book",
     "Emacs": "file-alt",
