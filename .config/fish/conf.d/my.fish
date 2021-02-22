@@ -17,6 +17,7 @@ alias psc='ps xawf -eo pid,user,cgroup,args'
 set EDITOR nvim
 set PAGER bat
 set TERM xterm-256color
+set -x MANPAGER "sh -c 'col -bx | bat -l man -p'"
 
 set -gx LESS_TERMCAP_mb \e'[1;32m'
 set -gx LESS_TERMCAP_md \e'[1;32m'
