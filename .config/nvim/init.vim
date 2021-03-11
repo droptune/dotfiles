@@ -7,8 +7,6 @@ call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 
 Plugin 'vim-scripts/indentpython.vim'
-"Plugin 'vim-airline/vim-airline'
-"Plugin 'vim-airline/vim-airline-themes'
 Plugin 'chriskempson/base16-vim'
 Plugin 'ntpeters/vim-better-whitespace'
 Plugin 'tpope/vim-fugitive'
@@ -28,13 +26,13 @@ Plugin 'mxw/vim-jsx'
 Plugin 'leshill/vim-json'
 Plugin 'ayu-theme/ayu-vim'
 Plugin 'idbrii/vim-endoscope'
-Plugin 'Valloric/YouCompleteMe'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'ryanoasis/vim-devicons'
 Plugin 'ap/vim-css-color'
 Plugin 'itchyny/lightline.vim'
 Plugin 'mengelbrecht/lightline-bufferline'
+Plugin 'neoclide/coc.nvim'
 
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -153,17 +151,6 @@ let g:markdown_fenced_languages = ['html', 'python', 'bash=sh', 'javascript', 'x
 
 highlight ErrorBetterComments ctermfg=Red
 
-" YouCompleteMe
-" close preview window after completion
-let g:ycm_autoclose_preview_window_after_completion=1
-
-" map GoToDeclaration to <leader> + g
-map <leader>g :YcmCompleter GoToDeclaration<CR>
-
-" disable YouCompleteMe for file types:
-let g:ycm_filetype_specific_completion_to_disable = {
-    \ 'gitcommit': 1
-    \}
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 " VIM-GO
 let g:go_template_use_pkg = 1
@@ -176,6 +163,14 @@ highlight Comment cterm=italic
 
 let g:lightline = {
       \ 'colorscheme': 'ayu_light',
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste'],
+      \             [ 'cocstatus', 'currentfunction', 'readonly', 'filename', 'modified' ] ]
+      \ },
+      \ 'component_function': {
+      \   'cocstatus': 'coc#status',
+      \   'currentfunction': 'CocCurrentFunction'
+      \ },
       \ }
 
 " Buffer line for lightline
@@ -184,3 +179,14 @@ let g:lightline.component_expand = {'buffers': 'lightline#bufferline#buffers'}
 let g:lightline.component_type   = {'buffers': 'tabsel'}
 let g:lightline#bufferline#filename_modifier = ':t'
 set showtabline=2
+
+" coc
+function! CocCurrentFunction()
+    return get(b:, 'coc_current_function', '')
+endfunction
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+" vim-go for gopls
+let g:go_def_mode='gopls'
+let g:go_info_mode='gopls'
