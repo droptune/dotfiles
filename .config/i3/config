@@ -30,7 +30,7 @@ exec_always --no-startup-id exec i3-workspace-names-daemon
 
 # smart borders for i3gaps
 smart_borders on
-
+for_window [class="Brave-browser"] border none
 # Use pactl to adjust volume in PulseAudio.
 set $refresh_i3status killall -SIGUSR1 i3status
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +2% && $refresh_i3status
@@ -57,12 +57,16 @@ bindsym $mod+n exec nautilus
 # kill focused window
 bindsym $mod+Shift+q kill
 
+# Start brave
+bindsym $mod+b exec brave
+
 # lock system
 bindsym $mod+Shift+p exec "i3lock -i '/home/pixelduck/Pictures/lock.png'"
 
 # start dmenu (a program launcher)
 #bindsym $mod+d exec dmenu_run
-bindsym $mod+d exec rofi -combi-modi window#drun#ssh -theme slate -font "VictorMono Nerd Font 12" -show combi -icon-theme "Papirus" -show-icons
+#bindsym $mod+d exec rofi -combi-modi window#drun#ssh -theme slate -font "VictorMono Nerd Font 12" -show combi -icon-theme "Papirus" -show-icons
+bindsym $mod+d exec rofi -combi-modi window#drun -theme photon-violet -font "VictorMono Nerd Font 12" -show combi -icon-theme "Papirus" -show-icons
 
 # There also is the (new) i3-dmenu-desktop which only displays applications
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
