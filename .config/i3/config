@@ -60,6 +60,9 @@ bindsym $mod+Shift+q kill
 # Start brave
 bindsym $mod+b exec brave
 
+# Toggle touchpad
+bindsym $mod+t exec ~/bin/tp.sh
+
 # lock system
 bindsym $mod+Shift+p exec "i3lock -i '/home/pixelduck/Pictures/lock.png'"
 
