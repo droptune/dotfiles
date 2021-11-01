@@ -19,6 +19,7 @@
     "kitty": "terminal",
     "nautilus": "folder-open",
     "Org.gnome.Nautilus": "folder-open",
+    "obsidian": "gem",
     "Rawtherapee": "camera-retro",
     "signal": "comment",
     "thunderbird": "envelope",
