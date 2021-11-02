@@ -7,7 +7,6 @@ call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 
 Plugin 'vim-scripts/indentpython.vim'
-Plugin 'chriskempson/base16-vim'
 Plugin 'ntpeters/vim-better-whitespace'
 Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-surround'
@@ -24,7 +23,6 @@ Plugin 'wavded/vim-stylus'
 Plugin 'pangloss/vim-javascript'
 Plugin 'mxw/vim-jsx'
 Plugin 'leshill/vim-json'
-Plugin 'ayu-theme/ayu-vim'
 Plugin 'idbrii/vim-endoscope'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'ctrlpvim/ctrlp.vim'
@@ -33,6 +31,13 @@ Plugin 'ap/vim-css-color'
 Plugin 'itchyny/lightline.vim'
 Plugin 'mengelbrecht/lightline-bufferline'
 Plugin 'neoclide/coc.nvim'
+" Themes
+Plugin 'ayu-theme/ayu-vim'
+Plugin 'Mangeshrex/uwu.vim'
+Plugin 'savq/melange'
+Plugin 'pineapplegiant/spaceduck'
+Plugin 'chriskempson/base16-vim'
+Bundle 'sonph/onehalf', {'rtp': 'vim/'}
 
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -55,9 +60,9 @@ filetype plugin indent on    " required
 set termguicolors
 set encoding=utf-8
 set t_Co=256
-"colorscheme molokai
-let ayucolor="light"
-colorscheme ayu
+"let ayucolor="light"
+"colorscheme ayu
+colorscheme uwu
 syntax enable
 set tabstop=4
 set softtabstop=4
@@ -162,7 +167,7 @@ let g:go_fmt_command = "goimports"
 highlight Comment cterm=italic
 
 let g:lightline = {
-      \ 'colorscheme': 'ayu_light',
+      \ 'colorscheme': 'spaceduck',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste'],
       \             [ 'cocstatus', 'currentfunction', 'readonly', 'filename', 'modified' ] ]
