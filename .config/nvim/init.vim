@@ -31,6 +31,7 @@ Plugin 'ap/vim-css-color'
 Plugin 'itchyny/lightline.vim'
 Plugin 'mengelbrecht/lightline-bufferline'
 Plugin 'neoclide/coc.nvim'
+Plugin 'chr4/nginx.vim'
 " Themes
 Plugin 'ayu-theme/ayu-vim'
 Plugin 'Mangeshrex/uwu.vim'
@@ -152,7 +153,7 @@ nnoremap <Leader><space> za
 
 set splitright
 
-let g:markdown_fenced_languages = ['html', 'python', 'bash=sh', 'javascript', 'xml', 'c', 'css', 'go', 'yaml']
+let g:markdown_fenced_languages = ['html', 'python', 'dockerfile', 'bash=sh', 'javascript', 'xml', 'c', 'css', 'go', 'yaml']
 
 highlight ErrorBetterComments ctermfg=Red
 
