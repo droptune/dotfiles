@@ -99,6 +99,7 @@
           state: present
       with_items:
           - bookworm
+          - brave-browser
           - broot
           - chromium
           - code                    # VS Code
@@ -388,7 +389,7 @@
         owner: "{{ ansible_user_id }}"
         mode: 0740
       with_items:
-        - { src: "polybar.sh.j2", dst: ".config/polybar/launch.sh" }
+        - { src: "polybar.sh.j2", dest: ".config/polybar/launch.sh" }
 
     - name: Copy executable files for laptop
       copy:
@@ -440,4 +441,3 @@
       git:
           repo: "https://github.com/anstellaire/photon-rofi-themes"
           dest: "/usr/share/rofi/themes/photon/"
-
