@@ -216,7 +216,7 @@
     - name: Install node.js
       become: yes
       package:
-          name: nodejs, npm
+          name: nodejs,npm
           state: present
       when: ansible_distribution != "openSUSE Leap"
 
