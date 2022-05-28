@@ -102,9 +102,9 @@
           - code                    # VS Code
           - fd                      # alternative to 'find'
           - i3-gaps
-          - otf-fira-code
+          - ttf-fira-code
           - python-neovim
-          - siji                    # icon font
+          - siji-ng                 # icon font
           - the_silver_searcher
           - ttf-font-icons
           - ttf-unifont
