@@ -107,6 +107,7 @@
           - i3-gaps
           - ttf-fira-code
           - python-neovim
+          - python-pip
           - siji-ng                 # icon font
           - the_silver_searcher
           - ttf-font-icons
@@ -441,3 +442,8 @@
       git:
           repo: "https://github.com/anstellaire/photon-rofi-themes"
           dest: "/usr/share/rofi/themes/photon/"
+
+    - name: Install i3-workspace-names-daemon
+      pip:
+        name: i3-workspace-names-daemon
+        extra_args: --user
