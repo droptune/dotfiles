@@ -32,12 +32,16 @@ Plugin 'itchyny/lightline.vim'
 Plugin 'mengelbrecht/lightline-bufferline'
 Plugin 'neoclide/coc.nvim'
 Plugin 'chr4/nginx.vim'
+Plugin 'junegunn/fzf'
+Plugin 'junegunn/fzf.vim'
+Plugin 'vimlab/split-term.vim'
 " Themes
 Plugin 'ayu-theme/ayu-vim'
 Plugin 'Mangeshrex/uwu.vim'
 Plugin 'savq/melange'
 Plugin 'pineapplegiant/spaceduck'
 Plugin 'chriskempson/base16-vim'
+Plugin 'folke/tokyonight.nvim'
 Bundle 'sonph/onehalf', {'rtp': 'vim/'}
 
 call vundle#end()            " required
@@ -92,7 +96,7 @@ nnoremap <leader><space> :nohlsearch<CR>
 inoremap <C-;> <Esc>
 cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 set list
-set listchars=eol:↩
+set listchars=eol:↩,tab:▸\ 
 
 let python_highlight_all=1
 au BufRead,BufNewFile *.md set ft=markdown
@@ -193,6 +197,8 @@ endfunction
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
+" For Terminal
+set splitbelow
 " vim-go for gopls
 let g:go_def_mode='gopls'
 let g:go_info_mode='gopls'

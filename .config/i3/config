@@ -31,12 +31,16 @@ exec_always --no-startup-id exec i3-workspace-names-daemon
 # smart borders for i3gaps
 smart_borders on
 for_window [class="Brave-browser"] border none
+for_window [class="kitty"] border none
+for_window [class="telegram-desktop"] floating enable
+for_window [class="TelegramDesktop"] floating enable
 # Use pactl to adjust volume in PulseAudio.
 set $refresh_i3status killall -SIGUSR1 i3status
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +2% && $refresh_i3status
 bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -2% && $refresh_i3status
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
 bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
+
 
 # use these keys for focus, movement, and resize directions when reaching for
 # the arrows is not convenient
