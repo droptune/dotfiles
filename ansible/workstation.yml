@@ -109,6 +109,8 @@
           - ttf-unifont
           - wireshark-qt
           - yay
+          - zathura
+          - zathura-pdf-mupdf
       when: ansible_distribution == "Archlinux"
 
     - name: Install Synaptic driver
