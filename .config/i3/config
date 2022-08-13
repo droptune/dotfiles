@@ -32,6 +32,8 @@ exec_always --no-startup-id exec i3-workspace-names-daemon
 smart_borders on
 for_window [class="Brave-browser"] border none
 for_window [class="kitty"] border none
+for_window [class="Navigator"] border none
+for_window [class="firefox"] border none
 for_window [class="telegram-desktop"] floating enable
 for_window [class="TelegramDesktop"] floating enable
 # Use pactl to adjust volume in PulseAudio.
