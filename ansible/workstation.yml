@@ -1,7 +1,9 @@
 - hosts: localhost
   vars:
       user_bin: /home/{{ ansible_user_id }}/bin
-      is_laptop: true
+      is_laptop: false
+      main_monitor: "DP-1"
+      secondary_monitor: "DVI-I-1"
 
   tasks:
     - name: Current distr
@@ -96,14 +98,16 @@
           state: present
       with_items:
           - bookworm
+          - brave-browser
           - broot
           - chromium
           - code                    # VS Code
           - fd                      # alternative to 'find'
           - i3-gaps
-          - otf-fira-code
+          - ttf-fira-code
           - python-neovim
-          - siji                    # icon font
+          - python-pip
+          - siji-ng                 # icon font
           - the_silver_searcher
           - ttf-font-icons
           - ttf-unifont
@@ -215,7 +219,7 @@
     - name: Install node.js
       become: yes
       package:
-          name: nodejs, npm
+          name: nodejs,npm
           state: present
       when: ansible_distribution != "openSUSE Leap"
 
@@ -368,10 +372,37 @@
           - ".config/i3/app-icons.json"
           - ".config/i3/config"
           - ".config/kitty/kitty.conf"
-          - ".config/polybar/config"
-          - ".config/polybar/launch.sh"
           - ".config/rofi/config.rasi"
           - ".config/vifm/vifmrc"
+
+    - name: Copy templated dotfiles
+      template:
+          src: "/home/{{ ansible_user_id }}/code/dotfiles/ansible/templates/{{ item.src }}"
+          dest: "/home/{{ ansible_user_id }}/{{ item.dest }}"
+          owner: "{{ ansible_user_id }}"
+          mode: 0640
+      with_items:
+        - { src: "polybar.ini.j2", dest: ".config/polybar/config.ini" }
+
+    - name: Copy executable files
+      template:
+        src: "/home/{{ ansible_user_id }}/code/dotfiles/ansible/templates/{{ item.src }}"
+        dest: "/home/{{ ansible_user_id }}/{{ item.dest }}"
+        owner: "{{ ansible_user_id }}"
+        mode: 0740
+      with_items:
+        - { src: "polybar.sh.j2", dest: ".config/polybar/launch.sh" }
+
+    - name: Copy executable files for laptop
+      copy:
+        src: "/home/{{ ansible_user_id }}/code/dotfiles/{{ item }}"
+        dest: "/home/{{ ansible_user_id }}/{{ item }}"
+        owner: "{{ ansible_user_id }}"
+        mode: 0740
+      with_items:
+        - "bin/external_display.sh"
+        - "bin/tp.sh"
+      when: is_laptop
 
 # VisualStudio Code for Fedora and openSUSE
     - name: Install MS VS Code repository signature
@@ -399,3 +430,21 @@
       become: yes
       zypper: name=code state=present update_cache=yes
       when: ansible_distribution == "openSUSE Leap"
+
+    - name: Create dir for photon Rofi theme
+      become: yes
+      file:
+        path: /usr/share/rofi/themes/photon
+        state: directory
+        mode: 0755
+
+    - name: Install Rofi Themes
+      become: yes
+      git:
+          repo: "https://github.com/anstellaire/photon-rofi-themes"
+          dest: "/usr/share/rofi/themes/photon/"
+
+    - name: Install i3-workspace-names-daemon
+      pip:
+        name: i3-workspace-names-daemon
+        extra_args: --user
