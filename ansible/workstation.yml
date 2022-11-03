@@ -12,19 +12,19 @@
         var: ansible_distribution
 
     - name: Update repos
-      become: true
+      become: yes
       command: "pacman -Sy"
       changed_when: true
       when: ansible_distribution == "Archlinux"
 
     - name: Update Ubuntu repos
-      become: true
+      become: yes
       command: "apt update"
       changed_when: true
       when: ansible_distribution == "Ubuntu" or ansible_distribution == "Debian"
 
     - name: Install Base utils
-      become: true
+      become: yes
       package:
         name: "{{ item }}"
         state: present
@@ -61,7 +61,7 @@
         - tealdeer
 
     - name: Install for other than SuSe
-      become: true
+      become: yes
       package:
         name: "{{ item }}"
         state: present
@@ -73,7 +73,7 @@
       when: ansible_distribution != "openSUSE Leap"
 
     - name: Install SUSE utils
-      become: true
+      become: yes
       zypper:
         name: [ 'bind-utils',
                 'the_silver_searcher',
@@ -93,7 +93,7 @@
         enabled: yes
 
     - name: Install Arch utils
-      become: true
+      become: yes
       package:
         name: "{{ item }}"
         state: present
@@ -119,14 +119,14 @@
       when: ansible_distribution == "Archlinux"
 
     - name: Install Synaptic driver
-      become: true
+      become: yes
       package:
         name: xf86-input-synaptics
         state: present
       when: is_laptop
 
     - name: Install Ubuntu and Debian utils
-      become: true
+      become: yes
       package:
         name: "{{ item }}"
         state: present
@@ -137,7 +137,7 @@
       when: ansible_distribution == "Ubuntu" or ansible_distribution == "Debian"
 
     - name: Install Debian utils
-      become: true
+      become: yes
       package:
         name: "{{ item }}"
         state: present
@@ -146,7 +146,7 @@
       when: ansible_distribution == "Debian"
 
     - name: Install Ubuntu utils
-      become: true
+      become: yes
       package:
         name: "{{ item }}"
         state: present
@@ -156,11 +156,11 @@
 
     - name: Enable some copr repos for Fedora
       command: dnf -y copr enable evana/fira-code-fonts
-      become: true
+      become: yes
       when: ansible_distribution == "Fedora"
 
     - name: Install Fedora utils
-      become: true
+      become: yes
       package:
         name: "{{ item }}"
         state: present
@@ -207,7 +207,7 @@
         creates: "/home/{{ ansible_user_id }}/.config/fish/functions/fish_user_key_bindings.fish"
 
     - name: Install node.js repo
-      become: true
+      become: yes
       shell: "curl -sL https://deb.nodesource.com/setup_12.x | bash -"
       when: ansible_distribution == "Ubuntu" or ansible_distribution == "Debian"
 
@@ -218,14 +218,14 @@
         owner: "{{ ansible_user_id }}"
 
     - name: Install node.js
-      become: true
+      become: yes
       package:
         name: nodejs,npm
         state: present
       when: ansible_distribution != "openSUSE Leap"
 
     - name: Install node.js in SUSE
-      become: true
+      become: yes
       package:
         name: [ 'nodejs10', 'npm10' ]
         state: present
@@ -237,7 +237,7 @@
     - name: Check if ~/bin is in path
       command: "echo $PATH"
       register: path_contents
-      changed_when: False
+      changed_when: false
       tags: ["never", "after_install"]
 
     - name: Update fish path
@@ -255,12 +255,12 @@
         - prettier
 
     - name: Change default shell to fish
-      become: true
+      become: yes
       command: "chsh -s /usr/bin/fish {{ ansible_user_id }}"
       when: ansible_distribution != "Fedora"
 
     - name: Change default shell to fish
-      become: true
+      become: yes
       command: "usermod --shell /bin/fish {{ ansible_user_id }}"
       when: ansible_distribution == "Fedora"
 
@@ -272,7 +272,7 @@
 
     - name: Update font cache
       command: "fc-cache -vf /usr/share/fonts/X11/misc/"
-      changed_when: True
+      changed_when: true
       when: ansible_distribution == "Ubuntu" or ansible_distribution == "Debian"
 
     - name: Create fontconfig directory
@@ -289,7 +289,7 @@
       when: ansible_distribution == "Ubuntu" or ansible_distribution == "Debian"
 
     - name: Install YouCompleteMe dependencies for Fedora
-      become: true
+      become: yes
       package:
         name: "{{ item }}"
         state: present
@@ -303,7 +303,7 @@
       tags: ['never', 'youcompleteme']
 
     - name: Install YouCompleteMe dependencies for Ubuntu
-      become: true
+      become: yes
       package:
         name: "{{ item }}"
         state: present
@@ -407,39 +407,39 @@
 # VisualStudio Code for Fedora and openSUSE
     - name: Install MS VS Code repository signature
       command: rpm --import https://packages.microsoft.com/keys/microsoft.asc
-      become: true
+      become: yes
       when: ansible_distribution == "Fedora" or ansible_distribution == "openSUSE Leap"
 
     - name: Enable MS VS Code repo
       command: sudo zypper ar https://packages.microsoft.com/yumrepos/vscode vscode
-      become: true
+      become: yes
       when: ansible_distribution == "openSUSE Leap"
 
     - name: Create MS VS Code repo file
       command: sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
-      become: true
+      become: yes
       when: ansible_distribution == "Fedora"
 
     - name: Install MS VS Code in Fedora
-      become: true
+      become: yes
       dnf:
         name=code state=present update_cache=yes
       when: ansible_distribution == "Fedora"
 
     - name: Install MS VS Code in SUSE
-      become: true
+      become: yes
       zypper: name=code state=present update_cache=yes
       when: ansible_distribution == "openSUSE Leap"
 
     - name: Create dir for photon Rofi theme
-      become: true
+      become: yes
       file:
         path: /usr/share/rofi/themes/photon
         state: directory
         mode: 0755
 
     - name: Install Rofi Themes
-      become: true
+      become: yes
       git:
         repo: "https://github.com/anstellaire/photon-rofi-themes"
         dest: "/usr/share/rofi/themes/photon/"
