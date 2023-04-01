@@ -42,9 +42,13 @@ Plugin 'savq/melange'
 Plugin 'pineapplegiant/spaceduck'
 Plugin 'chriskempson/base16-vim'
 Plugin 'folke/tokyonight.nvim'
+Plugin 'rose-pine/neovim'
+Plugin 'mcchrish/zenbones.nvim'
 Bundle 'sonph/onehalf', {'rtp': 'vim/'}
 
 call vundle#end()            " required
+nnoremap <SPACE> <Nop>
+let mapleader=' '
 filetype plugin indent on    " required
 " Enable the list of buffers
 "let g:airline#extensions#tabline#enabled = 1
@@ -147,6 +151,8 @@ nnoremap <Leader>w :w<Enter>
 nnoremap <Leader>a :b#<CR>
 nnoremap <Leader>q :bp<CR>
 nnoremap <Leader>e :bn<CR>
+nnoremap <Leader>c :bd<CR>
+nnoremap <Leader>t :10Term<CR>
 
 " Code folding
 set foldmethod=indent
@@ -195,6 +201,12 @@ function! CocCurrentFunction()
 endfunction
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+"Move between panes
+nmap <M-h> :wincmd h<CR>
+nmap <M-j> :wincmd j<CR>
+nmap <M-k> :wincmd k<CR>
+nmap <M-l> :wincmd l<CR>
 
 " For Terminal
 set splitbelow
