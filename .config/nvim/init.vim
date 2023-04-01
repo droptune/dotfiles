@@ -66,8 +66,6 @@ set termguicolors
 set encoding=utf-8
 set t_Co=256
 "let ayucolor="light"
-"colorscheme ayu
-colorscheme uwu
 syntax enable
 set tabstop=4
 set softtabstop=4
@@ -171,8 +169,9 @@ let g:go_fmt_command = "goimports"
 "set t_ZR=[23m
 highlight Comment cterm=italic
 
+" was spaceduck
 let g:lightline = {
-      \ 'colorscheme': 'spaceduck',
+      \ 'colorscheme': 'zenbones',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste'],
       \             [ 'cocstatus', 'currentfunction', 'readonly', 'filename', 'modified' ] ]
@@ -202,3 +201,6 @@ set splitbelow
 " vim-go for gopls
 let g:go_def_mode='gopls'
 let g:go_info_mode='gopls'
+let g:zenbones_compat = 1
+colorscheme uwu
+"colorscheme zenbones
