@@ -203,10 +203,10 @@ inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
 "Move between panes
-nmap <M-h> :wincmd h<CR>
-nmap <M-j> :wincmd j<CR>
-nmap <M-k> :wincmd k<CR>
-nmap <M-l> :wincmd l<CR>
+nmap <silent> <M-h> :wincmd h<CR>
+nmap <silent> <M-j> :wincmd j<CR>
+nmap <silent> <M-k> :wincmd k<CR>
+nmap <silent> <M-l> :wincmd l<CR>
 
 " For Terminal
 set splitbelow
