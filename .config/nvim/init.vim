@@ -44,6 +44,7 @@ Plugin 'chriskempson/base16-vim'
 Plugin 'folke/tokyonight.nvim'
 Plugin 'rose-pine/neovim'
 Plugin 'mcchrish/zenbones.nvim'
+Plugin 'sainnhe/everforest'
 Bundle 'sonph/onehalf', {'rtp': 'vim/'}
 
 call vundle#end()            " required
@@ -175,9 +176,9 @@ let g:go_fmt_command = "goimports"
 "set t_ZR=[23m
 highlight Comment cterm=italic
 
-" was spaceduck
+" was spaceduck, then zenbones
 let g:lightline = {
-      \ 'colorscheme': 'zenbones',
+      \ 'colorscheme': 'everforest',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste'],
       \             [ 'cocstatus', 'currentfunction', 'readonly', 'filename', 'modified' ] ]
@@ -214,5 +215,8 @@ set splitbelow
 let g:go_def_mode='gopls'
 let g:go_info_mode='gopls'
 let g:zenbones_compat = 1
-colorscheme uwu
-"colorscheme zenbones
+"colorscheme uwu
+set background=light
+let g:everforest_background = 'hard'
+"let g:everforest_enable_italic = 1
+colorscheme everforest
