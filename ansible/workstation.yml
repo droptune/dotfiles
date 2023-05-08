@@ -336,18 +336,19 @@
 
     - name: Create dotfiles directories
       file:
-        path: "{{ item }}"
+        path: "/home/{{ ansible_user_id }}/.config/{{ item }}"
         state: directory
         owner: "{{ ansible_user_id }}"
       with_items:
-        - "/home/{{ ansible_user_id }}/.config/fish"
-        - "/home/{{ ansible_user_id }}/.config/fish/conf.d"
-        - "/home/{{ ansible_user_id }}/.config/i3"
-        - "/home/{{ ansible_user_id }}/.config/kitty"
-        - "/home/{{ ansible_user_id }}/.config/nvim"
-        - "/home/{{ ansible_user_id }}/.config/polybar"
-        - "/home/{{ ansible_user_id }}/.config/rofi"
-        - "/home/{{ ansible_user_id }}/.config/vifm"
+        - "fish"
+        - "fish/conf.d"
+        - "i3"
+        - "kitty"
+        - "nvim"
+        - "polybar"
+        - "rofi"
+        - "tmux"
+        - "vifm"
 
     - name: Get dotfiles
       git:
@@ -364,7 +365,7 @@
         - ".config/nvim/init.vim"
         - ".tmux.conf"
         - ".gitconfig"
-        - ".config/tmux-theme.conf"
+        - ".config/tmux/tmux-theme.conf"
         - ".config/fish/conf.d/my.fish"
         - ".config/fish/functions/mkcd.fish"
         - ".config/fish/functions/t.fish"
