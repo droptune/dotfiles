@@ -288,45 +288,6 @@
         dest: "/home/{{ ansible_user_id }}/.config/fontconfig/conf.d/10-powerline-symbols.conf"
       when: ansible_distribution == "Ubuntu" or ansible_distribution == "Debian"
 
-    - name: Install YouCompleteMe dependencies for Fedora
-      become: yes
-      package:
-        name: "{{ item }}"
-        state: present
-      with_items:
-        - cmake
-        - gcc-c++
-        - make
-        - python3-devel
-      when:
-        ansible_distribution == "Fedora"
-      tags: ['never', 'youcompleteme']
-
-    - name: Install YouCompleteMe dependencies for Ubuntu
-      become: yes
-      package:
-        name: "{{ item }}"
-        state: present
-      with_items:
-        - cmake
-        - built-essential
-        - python3-dev
-      when:
-        ansible_distribution == "Ubuntu"
-      tags: ['never', 'youcompleteme']
-
-    - name: Install YouCompleteMe
-      command: "python3 install.py --clang-completer --ts-completer"
-      args:
-        chdir: "/home/{{ ansible_user_id }}/.vim/bundle/YouCompleteMe/"
-      tags: ["never", "youcompleteme"]
-
-    - name: Create local fonts directory
-      file:
-        path: "/home/{{ ansible_user_id }}/.local/share/fonts/"
-        state: directory
-        owner: "{{ ansible_user_id }}"
-
     - name: Get Victor Mono Font
       unarchive:
         src: files-workstation/VictorMono.zip
