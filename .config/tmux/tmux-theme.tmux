@@ -37,7 +37,7 @@ main()
   tmux set-option -g message-style "bg=${gray},fg=${white}"
 
   # status bar
-  tmux set-option -g status-style "bg=${gray},fg=${white}"
+  tmux set-option -g status-style "bg=${dark_gray},fg=${white}"
 
   # Status left
   tmux set-option -g status-left "#[bg=${green},fg=${dark_gray}] ${left_icon}"
