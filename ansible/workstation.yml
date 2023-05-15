@@ -5,6 +5,7 @@
     is_laptop: false
     main_monitor: "DP-1"
     secondary_monitor: "DVI-I-1"
+    with_nvchad: true
 
   tasks:
     - name: Current distr
@@ -108,7 +109,7 @@
         - ttf-fira-code
         - python-neovim
         - python-pip
-        - siji-ng                 # icon font
+        - siji                    # icon font
         - the_silver_searcher
         - ttf-font-icons
         - ttf-unifont
@@ -177,17 +178,20 @@
       # install rpmfusion
       # install ffmpeg-libs
 
-    - name: Create .vim directory
-      file:
-        path: /home/{{ ansible_user_id }}/.vim/bundle
-        state: directory
-        owner: "{{ ansible_user_id }}"
-        mode: 0700
+    - name: Install old vim system
+      block:
+      - name: Create .vim directory
+        file:
+          path: /home/{{ ansible_user_id }}/.vim/bundle
+          state: directory
+          owner: "{{ ansible_user_id }}"
+          mode: 0700
 
-    - name: Install Vundle
-      git:
-        repo: "https://github.com/VundleVim/Vundle.vim.git"
-        dest: "/home/{{ ansible_user_id }}/.vim/bundle/Vundle.vim"
+      - name: Install Vundle
+        git:
+          repo: "https://github.com/VundleVim/Vundle.vim.git"
+          dest: "/home/{{ ansible_user_id }}/.vim/bundle/Vundle.vim"
+      when: not with_nvchad
 
     - name: Install oh-my.fish
       shell: "curl -L https://get.oh-my.fish | fish"
@@ -295,6 +299,20 @@
       args:
         creates: "/home/{{ ansible_user_id }}/.local/share/fonts/Victor Mono Regular Nerd Font Complete Mono.ttf"
 
+    - name: Check if NvChad is installed
+      stat:
+        path: /home/pixelduck/.config/nvim/lua/core
+      register: nvchad_dir_path
+      when: with_nvchad
+
+    - name: Clone NvChad to nvim config directory
+      git:
+        repo: "https://github.com/NvChad/NvChad"
+        dest: "/home/{{ ansible_user_id }}/nvim/"
+        depth: 1
+      when: not nvchad_dir_path.stat.exists
+      when: with_nvchad
+
     - name: Create dotfiles directories
       file:
         path: "/home/{{ ansible_user_id }}/.config/{{ item }}"
@@ -306,6 +324,8 @@
         - "i3"
         - "kitty"
         - "nvim"
+        - "nvim/lua/custom"
+        - "nvim/lua/custom/configs"
         - "polybar"
         - "rofi"
         - "tmux"
@@ -314,19 +334,15 @@
     - name: Get dotfiles
       git:
         repo: 'https://github.com/droptune/dotfiles.git'
-        dest: '/home/{{ ansible_user_id }}/code/dotfiles'
+        dest: '/home/{{ ansible_user_id }}/code/dotfiles-install'
 
     - name: Copy dotfiles
       copy:
-        src: "/home/{{ ansible_user_id }}/code/dotfiles/{{ item }}"
+        src: "/home/{{ ansible_user_id }}/code/dotfiles-install/{{ item }}"
         dest: "/home/{{ ansible_user_id }}/{{ item }}"
         owner: "{{ ansible_user_id }}"
         mode: 0640
       with_items:
-        - ".config/nvim/init.vim"
-        - ".tmux.conf"
-        - ".gitconfig"
-        - ".config/tmux/tmux-theme.conf"
         - ".config/fish/conf.d/my.fish"
         - ".config/fish/functions/mkcd.fish"
         - ".config/fish/functions/t.fish"
@@ -334,12 +350,22 @@
         - ".config/i3/app-icons.json"
         - ".config/i3/config"
         - ".config/kitty/kitty.conf"
+        - ".config/nvim/lua/custom/chadrc.lua"
+        - ".config/nvim/lua/custom/init.lua"
+        - ".config/nvim/lua/custom/mappings.lua"
+        - ".config/nvim/lua/custom/plugins.lua"
+        - ".config/nvim/lua/custom/configs/lspconfig.lua"
+        - ".config/nvim/lua/custom/configs/null-ls.lua"
+        - ".config/nvim/lua/custom/configs/rust-tools.lua"
         - ".config/rofi/config.rasi"
+        - ".config/tmux/tmux-theme.tmux"
+        - ".config/tmux/tmux.conf"
         - ".config/vifm/vifmrc"
+        - ".gitconfig"
 
     - name: Copy templated dotfiles
       template:
-        src: "/home/{{ ansible_user_id }}/code/dotfiles/ansible/templates/{{ item.src }}"
+        src: "/home/{{ ansible_user_id }}/code/dotfiles-install/ansible/templates/{{ item.src }}"
         dest: "/home/{{ ansible_user_id }}/{{ item.dest }}"
         owner: "{{ ansible_user_id }}"
         mode: 0640
@@ -348,7 +374,7 @@
 
     - name: Copy executable files
       template:
-        src: "/home/{{ ansible_user_id }}/code/dotfiles/ansible/templates/{{ item.src }}"
+        src: "/home/{{ ansible_user_id }}/code/dotfiles-install/ansible/templates/{{ item.src }}"
         dest: "/home/{{ ansible_user_id }}/{{ item.dest }}"
         owner: "{{ ansible_user_id }}"
         mode: 0740
