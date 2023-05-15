@@ -76,4 +76,5 @@
 ;; they are implemented.
 (setq org-log-done 'time)
 (setq fancy-splash-image "~/Pictures/bwduck.png")
-(setq doom-font (font-spec :family "Fira Code" :size 14 :weight 'medium))
+(setq doom-font (font-spec :family "Fira Code" :size 16 :weight 'medium))
+;;(setq doom-font (font-spec :family "Victor Mono Regular Nerd Font" :size 16 :weight 'medium))
