@@ -9,6 +9,10 @@ local plugins = {
     },
   },
   {
+    "mustache/vim-mustache-handlebars",
+    ft = {"mustache"}
+  },
+  {
     "neovim/nvim-lspconfig",
     config = function()
       require "plugins.configs.lspconfig"

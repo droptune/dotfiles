@@ -45,6 +45,22 @@ M.dap_go = {
 M.mykeys = {
   n = {
     ["<leader>s"] = { "<cmd> w <CR>", "Save file" },
+  },
+  t = {
+    ["<A-j>"] = {
+      function()
+        vim.api.nvim_replace_termcodes("<C-\\><C-N>", true, true, true)
+        vim.cmd("wincmd j")
+      end,
+      "Go to lower window from terminal"
+    },
+    ["<A-k>"] = {
+      function()
+        vim.api.nvim_replace_termcodes("<C-\\><C-N>", true, true, true)
+        vim.cmd("wincmd k")
+      end,
+      "Go to upper window from terminal"
+    },
   }
 }
 
