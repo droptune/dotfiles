@@ -4,6 +4,11 @@ alias la='ls -A --color=auto'
 alias ls='ls --color=auto'
 alias l='ls -CF --color=auto'
 alias kctl='minikube kubectl --'
+# Kubernetes
+alias k='kubectl'
+alias kl='kubectl logs'
+alias kpa='kubectl get pods -A'
+#
 command -v emacs > /dev/null && alias todo='emacs -nw ~/todo.org'
 #command -v exa > /dev/null && alias ll='exa -l'
 #command -v exa > /dev/null && alias la='exa -a'
