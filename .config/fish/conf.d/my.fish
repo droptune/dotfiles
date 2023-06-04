@@ -25,6 +25,7 @@ set EDITOR nvim
 set PAGER bat
 set TERM xterm-256color
 set -x MANPAGER "sh -c 'col -bx | bat -l man -p'"
+set -x SSH_AUTH_SOCK $XDG_RUNTIME_DIR/ssh-agent.socket
 
 set -gx LESS_TERMCAP_mb \e'[1;32m'
 set -gx LESS_TERMCAP_md \e'[1;32m'
