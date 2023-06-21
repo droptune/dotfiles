@@ -42,9 +42,21 @@ M.dap_go = {
   }
 }
 
+M.dap_python = {
+  plugin = true,
+  n = {
+    ["<leader>dpr"] = {
+      function()
+        require('dap-python').test_method()
+      end
+    }
+  }
+}
+
 M.mykeys = {
   n = {
     ["<leader>s"] = { "<cmd> w <CR>", "Save file" },
+    ["<leader>]"] = { "<C-]>", "Go to definition" },
   },
   t = {
     ["<A-j>"] = {
