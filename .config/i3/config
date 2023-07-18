@@ -5,6 +5,9 @@ font pango:VictorMono Nerd Font Medium, 10
 
 # Enable ru layout
 exec --no-startup-id setxkbmap -layout us,ru -option 'grp:win_space_toggle'
+
+# Tweak keyboard mapping
+exec --no-startup-id xmodmap ~/.config/akko_modmap
 # xss-lock grabs a logind suspend inhibit lock and will use i3lock to lock the
 # screen before suspend. Use loginctl lock-session to lock your screen.
 exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
