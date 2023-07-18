@@ -48,7 +48,7 @@ set $right l
 floating_modifier $mod
 
 bindsym $mod+Return exec kitty
-bindsym $mod+n exec nautilus
+bindsym $mod+n exec GTK_THEME=Nordic:polar nautilus
 bindsym $mod+b exec brave
 
 # kill focused window
