@@ -24,7 +24,7 @@ alias psc='ps xawf -eo pid,user,cgroup,args'
 set EDITOR nvim
 set PAGER bat
 set TERM xterm-256color
-set -x MANPAGER "sh -c 'col -bx | bat -l man -p'"
+set -x MANPAGER "bat -l man -p"
 set -x SSH_AUTH_SOCK $XDG_RUNTIME_DIR/ssh-agent.socket
 
 set -gx LESS_TERMCAP_mb \e'[1;32m'

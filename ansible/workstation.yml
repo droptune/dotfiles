@@ -30,36 +30,40 @@
         name: "{{ item }}"
         state: present
       with_items:
-        - fish
-        - neovim
-        - tmux
-        - git
-        - ranger
-        - cmake
+        - bat
+        - btop
         - clang
-        - gcc
-        - make
-        - unbound
-        - flatpak
-        - keepass
+        - cmake
+        - cryptsetup
         - ctags
         - curl
-        - bat
-        - sakura
-        - mupdf
-        - vifm
-        - plank
-        - sxiv
-        - cryptsetup
-        - exa
-        - openvpn
-        - lsd
-        - rofi
-        - polybar
-        - nitrogen    # wallpaper manager
         - emacs
+        - exa
+        - fish
+        - flatpak
+        - gcc
+        - gdu
+        - git
+        - keepass
+        - lsd
         - lxappearance
+        - make
+        - mupdf
+        - neovim
+        - nitrogen    # wallpaper manager
+        - openvpn
+        - plank
+        - polybar
+        - ranger
+        - rofi
+        - rofi-pass
+        - sakura
+        - sxiv
         - tealdeer
+        - tmux
+        - unbound
+        - vifm
+      tags: packages
 
     - name: Install for other than SuSe
       become: yes

@@ -1,7 +1,7 @@
 ---@type ChadrcConfig 
  local M = {}
  M.ui = {
-  theme = 'everblush',
+  theme = 'everforest',
   statusline = {
     separator_style = "block", --default/round/block/arrow
   },

@@ -63,6 +63,8 @@ bindsym $mod+Shift+t exec ~/bin/caps.sh
 # Toggle external displays
 bindsym $mod+p exec ~/bin/external_display.sh
 
+bindsym $mod+o exec /usr/bin/rofi-pass
+
 bindsym $mod+Shift+p exec "i3lock -i '/home/pixelduck/Pictures/lock.png'"
 bindsym $mod+d exec rofi -combi-modi window#drun -theme photon-violet -font "VictorMono Nerd Font 12" -show combi -icon-theme "Papirus" -show-icons
 

@@ -2,6 +2,7 @@ local null_ls = require("null-ls")
 local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 
 local opts = {
+  debug = true,
   sources = {
     null_ls.builtins.diagnostics.checkmake,
     null_ls.builtins.diagnostics.deno_lint,
@@ -30,7 +31,7 @@ local opts = {
         group = augroup,
         buffer = bufnr,
         callback = function()
-          vim.lsp.buf.format({ bufnr = bufnr })
+          vim.lsp.buf.format({ async = false })
         end,
       })
     end
