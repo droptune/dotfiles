@@ -1,8 +1,8 @@
 ---
-- hosts: localhost
+- name: Configure workstation
+  hosts: localhost
   vars:
     user_bin: /home/{{ ansible_user_id }}/bin
-    is_laptop: false
     main_monitor: "DP-1"
     secondary_monitor: "DVI-I-1"
     with_nvchad: true
@@ -12,25 +12,56 @@
       ansible.builtin.debug:
         var: ansible_distribution
 
-    - name: Update repos
-      become: yes
-      ansible.builtin.command: "pacman -Sy"
-      changed_when: true
-      when: ansible_distribution == "Archlinux"
+    - name: Check if we are on laptop
+      ansible.builtin.command: cat /sys/class/dmi/id/chassis_type
+      changed_when: false
+      register: chassis_type
+      tags: packages
 
-    - name: Update Ubuntu repos
-      become: yes
-      ansible.builtin.command: "apt update"
-      changed_when: true
+    - name: Set is_laptop variable for laptops
+      ansible.builtin.set_fact:
+        is_laptop: true
+      when: chassis_type.stdout == "10"
+
+    - name: Set is_laptop variable for desktop
+      ansible.builtin.set_fact:
+        is_laptop: false
+      when: chassis_type.stdout != "10"
+
+    - name: Include ArchLinux tasks
+      ansible.builtin.include_tasks: archlinux.yml
+      when: ansible_distribution == "Archlinux"
+      tags: packages
+
+    - name: Include Debian and Ubuntu tasks
+      ansible.builtin.include_tasks: debian.yml
       when: ansible_distribution == "Ubuntu" or ansible_distribution == "Debian"
+      tags: packages
+
+    - name: Include Fedora tasks
+      ansible.builtin.include_tasks: fedora.yml
+      when: ansible_distribution == "Fedora"
+      tags: packages
+
+    - name: Include SUSE Leap tasks
+      ansible.builtin.include_tasks: suse_leap.yml
+      when: ansible_distribution == "openSUSE Leap"
+      tags: packages
 
     - name: Install Base utils
-      become: yes
+      become: true
       ansible.builtin.package:
         name: "{{ item }}"
         state: present
       with_items:
+        - alsa-utils
+        - filezilla
+        - flac
+        - aspell
+        - aspell-ru
+        - base-devel
         - bat
+        - blender
         - btop
         - clang
         - cmake
@@ -39,34 +70,44 @@
         - curl
         - emacs
         - exa
+        - firefox
         - fish
         - flatpak
         - gcc
         - gdu
         - git
+        - go
+        - gparted
+        - jq
         - keepass
+        - leafpad
         - lsd
         - lxappearance
         - make
+        - mediainfo
         - mupdf
         - neovim
         - nitrogen    # wallpaper manager
         - openvpn
-        - plank
         - polybar
+        - poppler
+        - pulseaudio
         - ranger
         - rofi
         - rofi-pass
-        - sakura
         - sxiv
         - tealdeer
+        - thunar
         - tmux
         - unbound
         - vifm
+        - which
+        - xorg-xrandr
+        - yq
       tags: packages
 
     - name: Install for other than SuSe
-      become: yes
+      become: true
       ansible.builtin.package:
         name: "{{ item }}"
         state: present
@@ -74,129 +115,36 @@
         - kitty
         - wipe
         - dnsutils        # dig etc.
-        - gnome-tweaks
       when: ansible_distribution != "openSUSE Leap"
 
-    - name: Install SUSE utils
-      become: yes
-      community.general.zypper:
-        name: [
-          'bind-utils',
-          'the_silver_searcher',
-          'chromium',
-          'wireshark',
-          'wireshark-ui-qt',
-          'bookworm',
-          'python3-neovim',
-          'vifm-colors'
-        ]
-        state: present
-      when: ansible_distribution == "openSUSE Leap"
-
     - name: Enable unbound
+      become: true
       ansible.builtin.service:
         name: unbound
-        enabled: yes
-
-    - name: Install Arch utils
-      become: yes
-      ansible.builtin.package:
-        name: "{{ item }}"
-        state: present
-      with_items:
-        - bookworm
-        - brave-browser
-        - broot
-        - chromium
-        - code                    # VS Code
-        - fd                      # alternative to 'find'
-        - i3-gaps
-        - ttf-fira-code
-        - python-neovim
-        - python-pip
-        - siji                    # icon font
-        - the_silver_searcher
-        - ttf-font-icons
-        - ttf-unifont
-        - wireshark-qt
-        - yay
-        - zathura
-        - zathura-pdf-mupdf
-      when: ansible_distribution == "Archlinux"
+        enabled: true
 
     - name: Install Synaptic driver
-      become: yes
+      become: true
       ansible.builtin.package:
         name: xf86-input-synaptics
         state: present
       when: is_laptop
-
-    - name: Install Ubuntu and Debian utils
-      become: yes
-      ansible.builtin.package:
-        name: "{{ item }}"
-        state: present
-      with_items:
-        - silversearcher-ag
-        - wireshark
-        - fonts-firacode
-      when: ansible_distribution == "Ubuntu" or ansible_distribution == "Debian"
-
-    - name: Install Debian utils
-      become: yes
-      ansible.builtin.package:
-        name: "{{ item }}"
-        state: present
-      with_items:
-        - chromium
-      when: ansible_distribution == "Debian"
-
-    - name: Install Ubuntu utils
-      become: yes
-      ansible.builtin.package:
-        name: "{{ item }}"
-        state: present
-      with_items:
-        - chromium-browser
-      when: ansible_distribution == "Ubuntu"
-
-    - name: Enable some copr repos for Fedora
-      ansible.builtin.command: dnf -y copr enable evana/fira-code-fonts
-      become: yes
-      when: ansible_distribution == "Fedora"
-
-    - name: Install Fedora utils
-      become: yes
-      ansible.builtin.package:
-        name: "{{ item }}"
-        state: present
-      with_items:
-        - the_silver_searcher
-        - wireshark
-        - chromium
-        - fira-code-fonts
-        - i3
-        - unifont
-      when: ansible_distribution == "Fedora"
-
-      # For Fedora:
-      # install rpmfusion
-      # install ffmpeg-libs
+      tags: packages
 
     - name: Install old vim system
+      when: not with_nvchad
       block:
         - name: Create .vim directory
           ansible.builtin.file:
             path: /home/{{ ansible_user_id }}/.vim/bundle
             state: directory
             owner: "{{ ansible_user_id }}"
-            mode: 0700
+            mode: "0700"
 
         - name: Install Vundle
-          git:
+          ansible.builtin.git:
             repo: "https://github.com/VundleVim/Vundle.vim.git"
             dest: "/home/{{ ansible_user_id }}/.vim/bundle/Vundle.vim"
-      when: not with_nvchad
 
     - name: Install oh-my.fish
       ansible.builtin.shell: "curl -L https://get.oh-my.fish | fish"
@@ -204,44 +152,47 @@
         creates: /home/{{ ansible_user_id }}/.oh-my-zsh
       tags: ['never', 'omf']
 
+    - name: Check if fzf is installed
+      ansible.builtin.stat:
+        path: "/home/{{ ansible_user_id }}/.fzf/bin/fzf"
+      register: fzf_bin_path
+
     - name: Clone fzf from git
       ansible.builtin.git:
         repo: "https://github.com/junegunn/fzf.git"
         dest: "/home/{{ ansible_user_id }}/.fzf"
         depth: 1
+      when: not fzf_bin_path.stat.exists
 
     - name: Install fzf
       ansible.builtin.command: "/home/{{ ansible_user_id }}/.fzf/install --all"
       args:
         creates: "/home/{{ ansible_user_id }}/.config/fish/functions/fish_user_key_bindings.fish"
-
-    - name: Install node.js repo
-      become: yes
-      shell: "curl -sL https://deb.nodesource.com/setup_12.x | bash -"
-      when: ansible_distribution == "Ubuntu" or ansible_distribution == "Debian"
+      when: not fzf_bin_path.stat.exists
 
     - name: Create local bin
       ansible.builtin.file:
         path: "{{ user_bin }}"
         state: directory
         owner: "{{ ansible_user_id }}"
+        mode: "0755"
 
     - name: Install node.js
-      become: yes
-      package:
+      become: true
+      ansible.builtin.package:
         name: nodejs,npm
         state: present
       when: ansible_distribution != "openSUSE Leap"
 
-    - name: Install node.js in SUSE
-      become: yes
-      package:
-        name: ['nodejs10', 'npm10']
-        state: present
-      when: ansible_distribution == "openSUSE Leap"
+    - name: Get npm prefix
+      ansible.builtin.command: "npm config get prefix"
+      register: npm_prefix
+      changed_when: false
 
     - name: Set npm prefix
       ansible.builtin.command: "npm config set prefix ~/npm"
+      when: npm_prefix.stdout != "/home/" + ansible_user_id + "/npm"
+      changed_when: true
 
     - name: Check if ~/bin is in path
       ansible.builtin.command: "echo $PATH"
@@ -250,61 +201,24 @@
       tags: ["never", "after_install"]
 
     - name: Update fish path
-      ansible.builtin.command: "set -U fish_user_paths $fish_user_paths /home/{{ ansible_user_id }}/bin"
+      ansible.builtin.shell: "set -U fish_user_paths $fish_user_paths /home/{{ ansible_user_id }}/bin"
       when: user_bin not in path_contents.stdout
+      changed_when: true
       tags: ["never", "after_install"]
 
-    - name: install global npm modules
-      npm:
+    - name: Install global npm modules
+      community.general.npm:
         name: "{{ item }}"
-        global: yes
+        global: true
       with_items:
         - yarn
         - stylus
         - prettier
 
     - name: Change default shell to fish
-      become: yes
-      ansible.builtin.command: "chsh -s /usr/bin/fish {{ ansible_user_id }}"
-      when: ansible_distribution != "Fedora"
-
-    - name: Change default shell to fish
-      become: yes
-      ansible.builtin.command: "usermod --shell /bin/fish {{ ansible_user_id }}"
-      when: ansible_distribution == "Fedora"
-
-    - name: Get Powerline fonts
-      get_url:
-        url: "https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf"
-        dest: "/usr/share/fonts/X11/misc/PowerlineSymbols.otf"
-      when: ansible_distribution == "Ubuntu" or ansible_distribution == "Debian"
-
-    - name: Update font cache
-      ansible.builtin.command: "fc-cache -vf /usr/share/fonts/X11/misc/"
-      changed_when: true
-      when: ansible_distribution == "Ubuntu" or ansible_distribution == "Debian"
-
-    - name: Create fontconfig directory
-      ansible.builtin.file:
-        path: "/home/{{ ansible_user_id }}/.config/fontconfig/conf.d"
-        state: directory
-        owner: "{{ ansible_user_id }}"
-        group: "{{ ansible_user_id }}"
-        mode: "0775"
-      when: ansible_distribution == "Ubuntu" or ansible_distribution == "Debian"
-
-    - name: Download fontconfig for powerline fonts
-      get_url:
-        url: "https://github.com/powerline/powerline/raw/develop/font/10-powerline-symbols.conf"
-        dest: "/home/{{ ansible_user_id }}/.config/fontconfig/conf.d/10-powerline-symbols.conf"
-      when: ansible_distribution == "Ubuntu" or ansible_distribution == "Debian"
-
-    - name: Get Victor Mono Font
-      unarchive:
-        src: ansible.builtin.files-workstation/VictorMono.zip
-        dest: "/home/{{ ansible_user_id }}/.local/share/fonts/"
-      args:
-        creates: "/home/{{ ansible_user_id }}/.local/share/fonts/Victor Mono Regular Nerd Font Complete Mono.ttf"
+      ansible.builtin.user:
+        name: "{{ ansible_user_id }}"
+        shell: "/usr/bin/fish"
 
     - name: Check if NvChad is installed
       ansible.builtin.stat:
@@ -313,10 +227,11 @@
       when: with_nvchad
 
     - name: Clone NvChad to nvim config directory
-      git:
+      ansible.builtin.git:
         repo: "https://github.com/NvChad/NvChad"
-        dest: "/home/{{ ansible_user_id }}/nvim/"
+        dest: "/home/{{ ansible_user_id }}/.config/nvim/"
         depth: 1
+        force: true
       when: not nvchad_dir_path.stat.exists and with_nvchad
 
     - name: Create dotfiles directories
@@ -324,6 +239,7 @@
         path: "/home/{{ ansible_user_id }}/.config/{{ item }}"
         state: directory
         owner: "{{ ansible_user_id }}"
+        mode: "0750"
       with_items:
         - "fish"
         - "fish/conf.d"
@@ -337,120 +253,108 @@
         - "tmux"
         - "vifm"
 
-    - name: Get dotfiles
-      git:
-        repo: 'https://github.com/droptune/dotfiles.git'
-        dest: '/home/{{ ansible_user_id }}/code/dotfiles-install'
-
-    - name: Copy dotfiles
-      ansible.builtin.copy:
-        src: "/home/{{ ansible_user_id }}/code/dotfiles-install/{{ item }}"
-        dest: "/home/{{ ansible_user_id }}/{{ item }}"
-        owner: "{{ ansible_user_id }}"
-        mode: 0640
-      with_items:
-        - ".config/fish/conf.d/my.fish"
-        - ".config/fish/functions/mkcd.fish"
-        - ".config/fish/functions/t.fish"
-        - ".config/fish/functions/vf.fish"
-        - ".config/i3/app-icons.json"
-        - ".config/i3/config"
-        - ".config/kitty/kitty.conf"
-        - ".config/nvim/lua/custom/chadrc.lua"
-        - ".config/nvim/lua/custom/init.lua"
-        - ".config/nvim/lua/custom/mappings.lua"
-        - ".config/nvim/lua/custom/plugins.lua"
-        - ".config/nvim/lua/custom/configs/lspconfig.lua"
-        - ".config/nvim/lua/custom/configs/null-ls.lua"
-        - ".config/nvim/lua/custom/configs/rust-tools.lua"
-        - ".config/rofi/config.rasi"
-        - ".config/tmux/tmux-theme.tmux"
-        - ".config/tmux/tmux.conf"
-        - ".config/vifm/vifmrc"
-        - ".gitconfig"
-
-    - name: Copy templated dotfiles
-      ansible.builtin.template:
-        src: "/home/{{ ansible_user_id }}/code/dotfiles-install/ansible/templates/{{ item.src }}"
-        dest: "/home/{{ ansible_user_id }}/{{ item.dest }}"
-        owner: "{{ ansible_user_id }}"
-        mode: 0640
-      with_items:
-        - src: "polybar.ini.j2"
-          dest: ".config/polybar/config.ini"
-
-    - name: Copy executable files
-      ansible.builtin.template:
-        src: "/home/{{ ansible_user_id }}/code/dotfiles-install/ansible/templates/{{ item.src }}"
-        dest: "/home/{{ ansible_user_id }}/{{ item.dest }}"
-        owner: "{{ ansible_user_id }}"
-        mode: 0740
-      with_items:
-        - src: "polybar.sh.j2"
-          dest: ".config/polybar/launch.sh"
-
-    - name: Copy executable ansible.builtin.files for laptop
-      ansible.builtin.copy:
-        src: "/home/{{ ansible_user_id }}/code/dotfiles/{{ item }}"
-        dest: "/home/{{ ansible_user_id }}/{{ item }}"
-        owner: "{{ ansible_user_id }}"
-        mode: 0740
-      with_items:
-        - "bin/external_display.sh"
-        - "bin/tp.sh"
-      when: is_laptop
-
-    # VisualStudio Code for Fedora and openSUSE
-    - name: Install MS VS Code repository signature
-      ansible.builtin.command: rpm --import https://packages.microsoft.com/keys/microsoft.asc
-      become: yes
-      when: ansible_distribution == "Fedora" or ansible_distribution == "openSUSE Leap"
-
-    - name: Enable MS VS Code repo
-      ansible.builtin.command: sudo zypper ar https://packages.microsoft.com/yumrepos/vscode vscode
-      become: yes
-      when: ansible_distribution == "openSUSE Leap"
-
-    - name: Check if VS Code repo is config is present
+    - name: Check if dotfiles are already installed
       ansible.builtin.stat:
-        path: /etc/yum.d/repos.d/vscode.repo
-      changed_when: no
-      register: vscode_repo
-      when: ansible_distribution == "Fedora"
+        path: "/home/{{ ansible_user_id }}/code/dotfiles-install"
+      register: dotfiles_install_dir
 
-    - name: Create MS VS Code repo ansible.builtin.file
-      ansible.builtin.command: sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
-      become: yes
-      when: ansible_distribution == "Fedora" and not vscode_repo.stat.exists
+    - name: Download dotfiles
+      when: not dotfiles_install_dir.exists
+      block:
+        - name: Get dotfiles
+          ansible.builtin.git:
+            repo: 'https://github.com/droptune/dotfiles.git'
+            dest: '/home/{{ ansible_user_id }}/code/dotfiles-install'
+            force: true
 
-    - name: Install MS VS Code in Fedora
-      become: yes
-      ansible.builtin.dnf:
-        name=code state=present update_cache=yes
-      when: ansible_distribution == "Fedora"
+        - name: Copy dotfiles
+          ansible.builtin.copy:
+            src: "/home/{{ ansible_user_id }}/code/dotfiles-install/{{ item }}"
+            dest: "/home/{{ ansible_user_id }}/{{ item }}"
+            owner: "{{ ansible_user_id }}"
+            mode: "0640"
+          with_items:
+            - ".config/fish/conf.d/my.fish"
+            - ".config/fish/functions/mkcd.fish"
+            - ".config/fish/functions/t.fish"
+            - ".config/fish/functions/vf.fish"
+            - ".config/i3/app-icons.json"
+            - ".config/i3/config"
+            - ".config/kitty/kitty.conf"
+            - ".config/nvim/lua/custom/chadrc.lua"
+            - ".config/nvim/lua/custom/init.lua"
+            - ".config/nvim/lua/custom/mappings.lua"
+            - ".config/nvim/lua/custom/plugins.lua"
+            - ".config/nvim/lua/custom/configs/lspconfig.lua"
+            - ".config/nvim/lua/custom/configs/null-ls.lua"
+            - ".config/nvim/lua/custom/configs/rust-tools.lua"
+            - ".config/rofi/config.rasi"
+            - ".config/tmux/tmux-theme.tmux"
+            - ".config/tmux/tmux.conf"
+            - ".config/vifm/vifmrc"
+            - ".gitconfig"
 
-    - name: Install MS VS Code in SUSE
-      become: yes
-      zypper: name=code state=present update_cache=yes
-      when: ansible_distribution == "openSUSE Leap"
+        - name: Copy templated dotfiles
+          ansible.builtin.template:
+            src: "/home/{{ ansible_user_id }}/code/dotfiles-install/ansible/templates/{{ item.src }}"
+            dest: "/home/{{ ansible_user_id }}/{{ item.dest }}"
+            owner: "{{ ansible_user_id }}"
+            mode: "0640"
+          with_items:
+            - src: "polybar.ini.j2"
+              dest: ".config/polybar/config.ini"
+
+        - name: Copy executable files
+          ansible.builtin.copy:
+            src: "/home/{{ ansible_user_id }}/code/dotfiles-install/{{ item }}"
+            dest: "/home/{{ ansible_user_id }}/{{ item }}"
+            owner: "{{ ansible_user_id }}"
+            mode: "0754"
+          with_items:
+            - ".config/tmux/tmux-theme.tmux"
+            - "bin/caps.sh"
+
+        - name: Copy executable templated files
+          ansible.builtin.template:
+            src: "/home/{{ ansible_user_id }}/code/dotfiles-install/ansible/templates/{{ item.src }}"
+            dest: "/home/{{ ansible_user_id }}/{{ item.dest }}"
+            owner: "{{ ansible_user_id }}"
+            mode: "0740"
+          with_items:
+            - src: "polybar.sh.j2"
+              dest: ".config/polybar/launch.sh"
+
+        - name: Copy executable ansible.builtin.files for laptop
+          ansible.builtin.copy:
+            src: "/home/{{ ansible_user_id }}/code/dotfiles/{{ item }}"
+            dest: "/home/{{ ansible_user_id }}/{{ item }}"
+            owner: "{{ ansible_user_id }}"
+            mode: "0740"
+          with_items:
+            - "bin/external_display.sh"
+            - "bin/tp.sh"
+            - "bin/brightness"
+          when: is_laptop
 
     - name: Create dir for photon Rofi theme
-      become: yes
+      become: true
       ansible.builtin.file:
         path: /usr/share/rofi/themes/photon
         state: directory
-        mode: 0755
+        mode: "0755"
 
     - name: Install Rofi Themes
-      become: yes
+      become: true
       ansible.builtin.git:
         repo: "https://github.com/anstellaire/photon-rofi-themes"
         dest: "/usr/share/rofi/themes/photon/"
+        force: true
 
     - name: Install i3-workspace-names-daemon
       ansible.builtin.pip:
         name: i3-workspace-names-daemon
         extra_args: --user
+      tags: never
 
     - name: Check if ssh-agent.service ansible.builtin.file exists
       ansible.builtin.stat:
@@ -463,7 +367,7 @@
         state: directory
         owner: "{{ ansible_user_id }}"
         group: "{{ ansible_user_id }}"
-        mode: 0664
+        mode: "0775"
       when: not ssh_agent_service.stat.exists
 
     - name: Touch ssh-agent.service ansible.builtin.file
@@ -472,7 +376,7 @@
         state: touch
         owner: "{{ ansible_user_id }}"
         group: "{{ ansible_user_id }}"
-        mode: 0664
+        mode: "0664"
       when: not ssh_agent_service.stat.exists
 
     - name: Create ssh-agent.service unit ansible.builtin.file
@@ -489,10 +393,106 @@
 
           [Install]
           WantedBy=default.target
+      when: not ssh_agent_service.stat.exists
 
     - name: Enable ssh-agent service
       ansible.builtin.systemd:
         name: ssh-agent.service
-        daemon_reload: yes
-        enabled: yes
+        daemon_reload: true
+        enabled: true
         scope: user
+
+    - name: Check if tmux plugin manager is installed
+      ansible.builtin.stat:
+        path: "/home/{{ ansible_user_id }}/.tmux/plugins/tpm"
+      register: tpm_path
+
+    - name: Create directory for tpm plugins
+      ansible.builtin.file:
+        path: "/home/{{ ansible_user_id }}/.tmux/plugins"
+        mode: "0775"
+        state: directory
+      when: not tpm_path.stat.exists
+
+    - name: Install tmux plugin manager
+      ansible.builtin.git:
+        repo: "https://github.com/tmux-plugins/tpm.git"
+        dest: "/home/{{ ansible_user_id }}/.tmux/plugins/tpm"
+      when: not tpm_path.stat.exists
+
+    - name: Check if VictorMono font is present
+      ansible.builtin.stat:
+        path: "/home/{{ ansible_user_id }}/.local/share/fonts/VictorMonoNerdFontPropo-Regular.ttf"
+      register: victormono
+
+    - name: Install VictorMono font if not present
+      when: not victormono.stat.exists
+      block:
+        - name: Create directory for fonts
+          ansible.builtin.file:
+            path: "/home/{{ ansible_user_id }}/.local/share/fonts/"
+            state: directory
+            mode: "0775"
+            owner: "{{ ansible_user_id }}"
+
+        - name: Get Victor Mono Font
+          ansible.builtin.get_url:
+            url: https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/VictorMono.zip
+            dest: /tmp/VictorMono.zip
+            owner: "{{ ansible_user_id }}"
+            mode: "0640"
+
+        - name: Unarchive Victor Mono Font
+          ansible.builtin.unarchive:
+            src: /tmp/VictorMono.zip
+            dest: "/home/{{ ansible_user_id }}/.local/share/fonts/"
+          args:
+            creates: "/home/{{ ansible_user_id }}/.local/share/fonts/VictorMonoNerdFontPropo-Regular.ttf"
+          notify: Update font cache
+
+        - name: Remove downloaded archive
+          ansible.builtin.file:
+            path: "/tmp/VictorMono.zip"
+            state: absent
+
+    - name: Configure TUI pinentry
+      block:
+        - name: Check if gpg-agent.conf is present
+          ansible.builtin.stat:
+            path: "/home/{{ ansible_user_id }}/.gnupg/gpg-agent.conf"
+          register: gpg_agent_conf
+
+        - name: Create ~/.gnupg directory
+          ansible.builtin.file:
+            path: "/home/{{ ansible_user_id }}/.gnupg"
+            state: directory
+            owner: "{{ ansible_user_id }}"
+            mode: "0750"
+          when: not gpg_agent_conf.stat.exists
+
+        - name: Create gpg-agent.conf
+          ansible.builtin.file:
+            path: "/home/{{ ansible_user_id }}/.gnupg/gpg-agent.conf"
+            state: touch
+            owner: "{{ ansible_user_id }}"
+            mode: "0640"
+          when: not gpg_agent_conf.stat.exists
+
+        - name: Put pinentry configuration
+          ansible.builtin.lineinfile:
+            path: "/home/{{ ansible_user_id }}/.gnupg/gpg-agent.conf"
+            line: pinentry-program /usr/bin/pinentry-curses
+            state: present
+          ignore_errors: "{{ ansible_check_mode }}"
+
+    - name: Enable fstrim
+      become: true
+      ansible.builtin.service:
+        name: fstrim.timer
+        enabled: true
+        state: started
+
+  handlers:
+    - name: Update font cache
+      ansible.builtin.command: fc-cache
+      changed_when: true

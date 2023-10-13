@@ -1,0 +1,101 @@
+---
+- name: Prevent installation of unneeded man pages
+  become: true
+  ansible.builtin.lineinfile:
+    path: "/etc/pacman.conf"
+    line: "{{ item }}"
+    insertafter: "[options]"
+    state: present
+  with_items:
+    - NoExtract = usr/share/help/* !usr/share/help/C/* !usr/share/help/ru/*
+    - NoExtract = usr/share/man/* !usr/share/man/man* !usr/share/man/ru/*
+
+- name: Uncomment pacman parallel downloads
+  become: true
+  ansible.builtin.lineinfile:
+    path: "/etc/pacman.conf"
+    regexp: "^# ParallelDownloads"
+    line: "ParallelDownloads = 5"
+
+- name: Install packages for Arch
+  become: true
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - bookworm
+    - broot
+    - chromium
+    - code                    # VS Code
+    - containerd
+    - docker
+    - docker-buildx
+    - docker-compose
+    - fd                      # alternative to 'find'
+    - i3-wm
+    - python-neovim
+    - python-pip
+    - python-setuptools
+    - runc
+    - the_silver_searcher
+    - ttf-fira-code
+    - virtualbox
+    - wireshark-qt
+    - zathura
+    - zathura-pdf-mupdf
+  when: ansible_distribution == "Archlinux"
+  tags: packages
+
+- name: Check if yay is installed
+  ansible.builtin.stat:
+    path: /sbin/yay
+  register: yay_bin
+  when: ansible_distribution == "Archlinux"
+
+- name: Install yay
+  when: not yay_bin.stat.exists
+  block:
+    - name: Clone yay
+      ansible.builtin.git:
+        repo: "https://aur.archlinux.org/yay.git"
+        dest: "/tmp/yay"
+
+    - name: Create yay package
+      ansible.builtin.command: makepkg -s
+      args:
+        chdir: "/tmp/yay"
+
+    - name: Get yay package name
+      ansible.builtin.command: makepkg --packagelist
+      args:
+        chdir: "/tmp/yay"
+      when: ansible_distribution == "Archlinux"
+      changed_when: false
+      register: yay_package_name
+
+    - name: Install yay
+      become: true
+      community.general.pacman:
+        name: "{{ yay_package_name.stdout }}"
+        state: present
+
+    - name: Delete yay package directory
+      ansible.builtin.file:
+        path: /tmp/yay
+        state: absent
+
+# This currently is not working so is skipped by 'never' tag
+- name: Install packages with yay
+  community.general.pacman:
+    name: "{{ item }}"
+    state: present
+    executable: yay
+    extra_args: --builddir /var/cache/yay
+  with_items:
+    - brave-bin
+    - i3-workspace-names-daemon,
+    - siji-ng
+    - ttf-font-icons
+    - ttf-unifont
+  when: ansible_distribution == "Archlinux"
+  tags: never

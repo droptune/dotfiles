@@ -1,0 +1,43 @@
+---
+- name: Enable some copr repos for Fedora
+  ansible.builtin.command: dnf -y copr enable evana/fira-code-fonts
+  become: true
+  tags: packages
+
+- name: Install Fedora utils
+  become: true
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - the_silver_searcher
+    - wireshark
+    - chromium
+    - fira-code-fonts
+    - i3
+    - unifont
+  tags: packages
+
+- name: Install VSCode in Fedora
+  when: not vscode_repo.stat.exists
+  block:
+    - name: Install MS VS Code repository signature
+      ansible.builtin.command: rpm --import https://packages.microsoft.com/keys/microsoft.asc
+      become: true
+
+    - name: Create MS VS Code repo ansible.builtin.file
+      ansible.builtin.command: sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
+      become: true
+
+    - name: Check if VS Code repo is config is present
+      ansible.builtin.stat:
+        path: /etc/yum.d/repos.d/vscode.repo
+      changed_when: false
+      register: vscode_repo
+
+    - name: Install MS VS Code in Fedora
+      become: true
+      ansible.builtin.dnf:
+        name: code
+        state: present
+        update_cache: true

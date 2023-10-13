@@ -1,0 +1,32 @@
+---
+- name: Install SUSE utils
+  become: true
+  community.general.zypper:
+    name: [
+      'bind-utils',
+      'bookworm',
+      'chromium',
+      'nodejs20',
+      'npm20',
+      'python3-neovim',
+      'the_silver_searcher',
+      'vifm-colors',
+      'wireshark',
+      'wireshark-ui-qt'
+    ]
+    state: present
+
+- name: Install MS VS Code repository signature
+  ansible.builtin.command: rpm --import https://packages.microsoft.com/keys/microsoft.asc
+  become: true
+
+- name: Enable MS VS Code repo
+  ansible.builtin.command: sudo zypper ar https://packages.microsoft.com/yumrepos/vscode vscode
+  become: true
+
+- name: Install MS VS Code in SUSE
+  become: true
+  community.general.zypper:
+    name: code
+    state: present
+    update_cache: true

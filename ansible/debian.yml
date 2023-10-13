@@ -1,0 +1,71 @@
+---
+- name: Update repos
+  become: true
+  ansible.builtin.command: "apt update"
+  changed_when: true
+
+- name: Install additional utils
+  become: true
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - silversearcher-ag
+    - wireshark
+    - fonts-firacode
+  tags: packages
+
+- name: Install Debian utils
+  become: true
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - chromium
+  when: ansible_distribution == "Debian"
+  tags: packages
+
+- name: Install Ubuntu utils
+  become: true
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - chromium-browser
+  when: ansible_distribution == "Ubuntu"
+  tags: packages
+
+- name: Check if Powerline fonts are present
+  ansible.builtin.stat:
+    path: /usr/share/fonts/X11/misc/PowerlineSymbols.otf
+  register: powerline_fonts
+
+- name: Get Powerline fonts
+  when: not powerline_fonts.exists
+  block:
+    - name: Download PowerLine fonts
+      ansible.builtin.get_url:
+        url: "https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf"
+        dest: "/usr/share/fonts/X11/misc/PowerlineSymbols.otf"
+        mode: "0664"
+
+    - name: Update font cache
+      ansible.builtin.command: "fc-cache -vf /usr/share/fonts/X11/misc/"
+      changed_when: true
+
+    - name: Create fontconfig directory
+      ansible.builtin.file:
+        path: "/home/{{ ansible_user_id }}/.config/fontconfig/conf.d"
+        state: directory
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_id }}"
+        mode: "0775"
+
+    - name: Download fontconfig for powerline fonts
+      ansible.builtin.get_url:
+        url: "https://github.com/powerline/powerline/raw/develop/font/10-powerline-symbols.conf"
+        dest: "/home/{{ ansible_user_id }}/.config/fontconfig/conf.d/10-powerline-symbols.conf"
+        owner: "{{ ansible_user_id }}"
+        mode: "0644"
+
+# TODO: Install node.js repo
