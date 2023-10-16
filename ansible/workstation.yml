@@ -69,7 +69,6 @@
         - ctags
         - curl
         - emacs
-        - exa
         - firefox
         - fish
         - flatpak
@@ -259,7 +258,7 @@
       register: dotfiles_install_dir
 
     - name: Download dotfiles
-      when: not dotfiles_install_dir.exists
+      when: not dotfiles_install_dir.stat.exists
       block:
         - name: Get dotfiles
           ansible.builtin.git:
