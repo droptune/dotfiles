@@ -43,6 +43,7 @@
     - wireshark-qt
     - zathura
     - zathura-pdf-mupdf
+    - tumbler
   when: ansible_distribution == "Archlinux"
   tags: packages
 
