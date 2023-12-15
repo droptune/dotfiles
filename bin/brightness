@@ -1,16 +1,40 @@
 #!/bin/bash
+# TODO: use $OUTPUT in awk parsing
+
+$DEFAULT=0.80
 
 if [ $# -lt 1 ]; then
  exit 1
 fi
 
+config_path="${HOME}/.config/brightness"
+
 # get main output name
 OUTPUT=$(xrandr --listmonitors | awk '$1 == "0:" {print $4}')
 
-if [ $1 == "up" ];then
-  NEW_BRIGHTNESS=$(xrandr --verbose | awk 'x==1 {print $1,$2} /eDP-1/ {x=1}' | awk '$1 == "Brightness:" {print $2+0.05}' | awk '{ if ($1>1) {print "1"} else {print $1}}')
-fi
-if [ $1 == "down" ];then
-  NEW_BRIGHTNESS=$(xrandr --verbose | awk 'x==1 {print $1,$2} /eDP-1/ {x=1}' | awk '$1 == "Brightness:" {print $2-0.05}' | awk '{ if ($1<0.05) {print "0.05"} else {print $1}}')
-fi
+case $1 in
+  up)
+    NEW_BRIGHTNESS=$(xrandr --verbose | awk 'x==1 {print $1,$2} /eDP-1/ {x=1}' | awk '$1 == "Brightness:" {print $2+0.05}' | awk '{ if ($1>1) {print "1"} else {print $1}}')
+    ;;
+  down)
+    NEW_BRIGHTNESS=$(xrandr --verbose | awk 'x==1 {print $1,$2} /eDP-1/ {x=1}' | awk '$1 == "Brightness:" {print $2-0.05}' | awk '{ if ($1<0.05) {print "0.05"} else {print $1}}')
+    ;;
+  restore)
+    if [ ! -f "${config_path}" ]; then
+      echo $DEFAULT > "${config_path}"
+    fi
+    NEW_BRIGHTNESS=$(cat "${config_path}")
+    ;;
+
+  info)
+    xrandr --verbose | awk 'x==1 {print $1,$2} /eDP-1/ {x=1}' | awk '$1 == "Brightness:" {print $2}'
+    exit 0
+    ;;
+  *)
+    echo "Use 'up','down','restore' or 'info'"
+    exit 1
+    ;;
+esac
+
 xrandr --output "${OUTPUT}" --brightness ${NEW_BRIGHTNESS}
+echo ${NEW_BRIGHTNESS} > "${config_path}"
