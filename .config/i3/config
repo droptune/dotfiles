@@ -17,6 +17,8 @@ exec --no-startup-id nitrogen --restore &
 
 exec_always --no-startup-id $HOME/.config/polybar/launch.sh
 
+exec --no-startup-id $HOME/bin/brightness restore
+
 # Enable layout switching with capslock
 exec ~/bin/caps.sh
 
@@ -48,7 +50,7 @@ set $right l
 floating_modifier $mod
 
 bindsym $mod+Return exec kitty
-bindsym $mod+n exec GTK_THEME=Nordic:polar nautilus
+bindsym $mod+n exec GTK_THEME=Nordic:polar thunar
 bindsym $mod+b exec brave
 
 # kill focused window
