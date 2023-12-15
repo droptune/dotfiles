@@ -59,7 +59,12 @@ case $1 in
     xrandr --verbose | awk 'x==1 {print $1,$2} /eDP-1/ {x=1}' | awk '$1 == "Brightness:" {print $2}'
     ;;
   *)
-    echo "Use 'up','down','restore' or 'info'"
+    echo "Usage: brightness <OPTION>"
+    echo "Available options:"
+    echo " * up/down - increase/decrease brightness"
+    echo " * restore - restore brightness to the value saved in $HOME/.config/brightness"
+    echo " * day/night - switch to day or night mode"
+    echo " * info - show current brightness value"
     exit 1
     ;;
 esac
