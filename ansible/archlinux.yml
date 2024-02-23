@@ -10,16 +10,9 @@
     - NoExtract = usr/share/help/* !usr/share/help/C/* !usr/share/help/ru/*
     - NoExtract = usr/share/man/* !usr/share/man/man* !usr/share/man/ru/*
 
-- name: Uncomment pacman parallel downloads
-  become: true
-  ansible.builtin.lineinfile:
-    path: "/etc/pacman.conf"
-    regexp: "^# ParallelDownloads"
-    line: "ParallelDownloads = 5"
-
 - name: Install packages for Arch
   become: true
-  ansible.builtin.package:
+  community.general.pacman:
     name: "{{ item }}"
     state: present
   with_items:
@@ -94,8 +87,8 @@
     extra_args: --builddir /var/cache/yay
   with_items:
     - brave-bin
-    - i3-workspace-names-daemon,
-    - siji-ng
+    - i3-workspace-names-daemon
+    - siji-ttf
     - ttf-font-icons
     - ttf-unifont
   when: ansible_distribution == "Archlinux"
