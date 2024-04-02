@@ -15,6 +15,9 @@ exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
 # Enable wallpapers
 exec --no-startup-id nitrogen --restore &
 
+# disable display standby
+exec --no-startup-id xset -dpms
+
 exec_always --no-startup-id $HOME/.config/polybar/launch.sh
 
 exec --no-startup-id $HOME/bin/brightness restore

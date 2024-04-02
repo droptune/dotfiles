@@ -32,11 +32,12 @@
     - runc
     - the_silver_searcher
     - ttf-fira-code
+    - tumbler
     - virtualbox
     - wireshark-qt
+    - xorg-xinput
     - zathura
     - zathura-pdf-mupdf
-    - tumbler
   when: ansible_distribution == "Archlinux"
   tags: packages
 
