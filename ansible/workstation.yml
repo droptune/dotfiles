@@ -73,6 +73,7 @@
         - firefox
         - fish
         - flatpak
+        - fzf
         - gcc
         - gdu
         - git
@@ -152,24 +153,6 @@
       args:
         creates: /home/{{ ansible_user_id }}/.oh-my-zsh
       tags: ['never', 'omf']
-
-    - name: Check if fzf is installed
-      ansible.builtin.stat:
-        path: "/home/{{ ansible_user_id }}/.fzf/bin/fzf"
-      register: fzf_bin_path
-
-    - name: Clone fzf from git
-      ansible.builtin.git:
-        repo: "https://github.com/junegunn/fzf.git"
-        dest: "/home/{{ ansible_user_id }}/.fzf"
-        depth: 1
-      when: not fzf_bin_path.stat.exists
-
-    - name: Install fzf
-      ansible.builtin.command: "/home/{{ ansible_user_id }}/.fzf/install --all"
-      args:
-        creates: "/home/{{ ansible_user_id }}/.config/fish/functions/fish_user_key_bindings.fish"
-      when: not fzf_bin_path.stat.exists
 
     - name: Create local bin
       ansible.builtin.file:
