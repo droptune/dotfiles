@@ -27,6 +27,9 @@ exec ~/bin/caps.sh
 
 exec_always --no-startup-id exec i3-workspace-names-daemon
 
+gaps inner 5px
+smart_gaps on
+
 # smart borders for i3gaps
 smart_borders on
 for_window [class="Brave-browser"] border none
