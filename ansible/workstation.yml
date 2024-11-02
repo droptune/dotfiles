@@ -55,8 +55,6 @@
         state: present
       with_items:
         - alsa-utils
-        - filezilla
-        - flac
         - aspell
         - aspell-ru
         - base-devel
@@ -70,8 +68,11 @@
         - curl
         - direnv
         - emacs
+        - filezilla
         - firefox
         - fish
+        - flac
+        - flameshot
         - flatpak
         - fzf
         - gcc
@@ -89,15 +90,18 @@
         - mupdf
         - neovim
         - nitrogen    # wallpaper manager
+        - ntfs-3g
         - openvpn
         - pass
+        - pipewire-pulse
         - polybar
         - poppler
-        - pipewire-pulse
         - ranger
         - rofi
         - rofi-pass
+        - rsync
         - sxiv
+        - tasks
         - tealdeer
         - thunar
         - tmux
