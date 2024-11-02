@@ -21,6 +21,7 @@ main()
   cyan='#00a8e8'
 
   left_icon='🦆 '
+  CHASSIS=$(cat /sys/class/dmi/id/chassis_type)
 
   tmux set-option -g status-interval 5
   tmux set-option -g clock-mode-style 24
@@ -44,8 +45,10 @@ main()
 
   tmux set-option -g status-right ""
 
-  # Battery
-  tmux set-option -ga status-right "#[bg=${pink},fg=${dark_gray}]#($current_dir/battery.sh) "
+  if [$CHASSIS -ne 3]; then
+    # Battery
+    tmux set-option -ga status-right "#[bg=${pink},fg=${dark_gray}]#($current_dir/battery.sh) "
+  fi
 
   # Network
   SSID=$(iw dev | sed -nr 's/^\t\tssid (.*)/\1/p')
@@ -55,8 +58,11 @@ main()
   tmux set-option -ga status-right "#[bg=${cyan},fg=${dark_gray}] #(pgrep openvpn $$ echo ' 📡VPN ')"
 
   # Kubernetes context
-  k8s_context=$(kubectl config view --minify --output 'jsonpath={.current-context}')
-  tmux set-option -ga status-right "#[bg=${orange},fg=${dark_gray}] $k8s_context "
+  KUBECTL_BIN=$(command -v kubectl)
+  if [ ! -z $KUBECTL_BIN]; then
+    k8s_context=$(kubectl config view --minify --output 'jsonpath={.current-context}')
+    tmux set-option -ga status-right "#[bg=${orange},fg=${dark_gray}] $k8s_context "
+  fi
 
   # TIme
   tmux set-option -ga status-right "#[bg=${dark_teal},fg=${dark_gray}] ${time_format} "
