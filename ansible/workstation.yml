@@ -107,8 +107,10 @@
         - tmux
         - unbound
         - vifm
+        - wezterm
         - which
         - xorg-xrandr
+        - yazi
         - yq
       tags: packages
 

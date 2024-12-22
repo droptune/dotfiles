@@ -33,12 +33,13 @@ smart_gaps on
 # smart borders for i3gaps
 smart_borders on
 for_window [class="Brave-browser"] border none
-for_window [class="kitty"] border none
 for_window [class="Navigator"] border none
-for_window [class="firefox"] border none
-for_window [class="telegram-desktop"] floating enable
 for_window [class="TelegramDesktop"] floating enable
+for_window [class="firefox"] border none
+for_window [class="kitty"] border none
+for_window [class="telegram-desktop"] floating enable
 for_window [title="Blender Preferences" class="Blender"] floating enable
+for_window [class="wezterm"] border none
 # Use pactl to adjust volume in PulseAudio.
 set $refresh_i3status killall -SIGUSR1 i3status
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +2% && $refresh_i3status
@@ -56,7 +57,7 @@ set $right l
 # use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
-bindsym $mod+Return exec kitty
+bindsym $mod+Return exec wezterm
 bindsym $mod+n exec GTK_THEME=Nordic:polar thunar
 bindsym $mod+b exec brave
 
