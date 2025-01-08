@@ -38,14 +38,10 @@ config.window_frame = {
 config.disable_default_key_bindings = true
 config.leader = { key = 'Space', mods = 'CTRL', timeout_milliseconds = 2000 }
 config.keys = {
-  { key = 'v', mods = 'CTRL', action = act.PasteFrom 'Clipboard' },
   { key = 'Insert', mods = 'SHIFT', action = act.PasteFrom 'Clipboard' },
   { key = 'n', mods = 'LEADER', action = act.ActivateTabRelative(1) },
   { key = 'p', mods = 'LEADER', action = act.ActivateTabRelative(-1) },
   { key = 'R', mods = 'SHIFT|CTRL', action = act.ReloadConfiguration },
-  { key = '+', mods = 'CTRL', action = act.IncreaseFontSize },
-  { key = '-', mods = 'CTRL', action = act.DecreaseFontSize },
-  { key = '0', mods = 'CTRL', action = act.ResetFontSize },
   { key = 'C', mods = 'SHIFT|CTRL', action = act.CopyTo 'Clipboard' },
   { key = 'N', mods = 'SHIFT|CTRL', action = act.SpawnWindow },
   { key = 'U', mods = 'SHIFT|CTRL', action = act.CharSelect{ copy_on_select = true, copy_to =  'ClipboardAndPrimarySelection' } },
@@ -62,8 +58,6 @@ config.keys = {
   { key = 'j', mods = 'LEADER', action = act.ActivatePaneDirection 'Down', },
   { key = 'k', mods = 'LEADER', action = act.ActivatePaneDirection 'Up', },
   { key = 'c', mods = 'LEADER', action = act.SpawnTab 'CurrentPaneDomain' },
-  { key = 'w', mods = 'CTRL', action = act.CloseCurrentTab{ confirm = false } },
-  { key = 'x', mods = 'CTRL', action = act.CloseCurrentPane{ confirm = false } },
   { key = 'b', mods = 'LEADER|CTRL', action = act.SendString '\x02', },
   { key = 'Enter', mods = 'LEADER', action = act.ActivateCopyMode, },
   { key = 'z', mods = 'LEADER', action = act.TogglePaneZoomState, },
