@@ -12,6 +12,7 @@ config.window_background_gradient = {
     '#23161A',
   }
 }
+config.window_background_opacity = 0.95
 config.use_fancy_tab_bar = false
 config.hide_tab_bar_if_only_one_tab = true
 config.switch_to_last_active_tab_when_closing_tab = true

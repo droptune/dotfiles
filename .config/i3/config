@@ -19,6 +19,7 @@ exec --no-startup-id nitrogen --restore &
 exec --no-startup-id xset -dpms
 
 exec_always --no-startup-id $HOME/.config/polybar/launch.sh
+exec_always --no-startup-id /usr/bin/picom -b
 
 exec --no-startup-id $HOME/bin/brightness restore
 

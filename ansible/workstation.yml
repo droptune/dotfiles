@@ -94,6 +94,7 @@
         - openvpn
         - pass
         - pipewire-pulse
+        - picom
         - polybar
         - poppler
         - ranger
