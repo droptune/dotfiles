@@ -60,8 +60,18 @@ config.keys = {
   { key = 'l', mods = 'LEADER', action = act.ActivatePaneDirection 'Right', },
   { key = 'j', mods = 'LEADER', action = act.ActivatePaneDirection 'Down', },
   { key = 'k', mods = 'LEADER', action = act.ActivatePaneDirection 'Up', },
-  { key = 'c', mods = 'LEADER', action = act.SpawnTab 'CurrentPaneDomain' },
   { key = 'с', mods = 'LEADER', action = act.SpawnTab 'CurrentPaneDomain' },
+  { key = 'c', mods = 'LEADER', action = wezterm.action_callback(function(win, pane)
+    local mux_win = win:mux_window()
+    for _, item in ipairs(mux_win:tabs_with_info()) do
+      if item.is_active then
+        mux_win:spawn_tab({cwd = wezterm.home_dir })
+        win:perform_action(wezterm.action.MoveTab(item.index+1), pane)
+        return
+      end
+    end
+    end),
+  },
   { key = 'b', mods = 'LEADER|CTRL', action = act.SendString '\x02', },
   { key = 'Enter', mods = 'LEADER', action = act.ActivateCopyMode, },
   { key = 'z', mods = 'LEADER', action = act.TogglePaneZoomState, },
