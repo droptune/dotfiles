@@ -78,6 +78,7 @@
         - gcc
         - gdu
         - git
+        - glow
         - go
         - gparted
         - jq
