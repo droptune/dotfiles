@@ -1,3 +1,4 @@
+require "nvchad.mappings"
 local map  = vim.keymap.set
 
 map("i", "<C-b>", "<ESC>^i", { desc = "move beginning of line" })
@@ -13,4 +14,4 @@ map("t", "<A-k>", function()
   end, { desc = "Go to upper window from terminal"})
 
 local nomap = vim.keymap.del
--- nomap("n", "<C-s>")
+nomap("n", "<C-s>")
