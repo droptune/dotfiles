@@ -6,6 +6,6 @@
     separator_style = "block", --default/round/block/arrow
   },
 }
- M.mappings = require "custom.mappings"
- M.plugins = "custom.plugins"
+ -- M.mappings = require "mappings"
+ -- M.plugins = "plugins"
  return M
