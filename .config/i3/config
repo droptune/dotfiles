@@ -20,6 +20,7 @@ exec --no-startup-id xset -dpms
 
 exec_always --no-startup-id $HOME/.config/polybar/launch.sh
 exec_always --no-startup-id /usr/bin/picom -b
+exec_always --no-startup-id /usr/bin/copyq
 
 exec --no-startup-id $HOME/bin/brightness restore
 
@@ -36,11 +37,12 @@ smart_borders on
 for_window [class="Brave-browser"] border none
 for_window [class="Navigator"] border none
 for_window [class="TelegramDesktop"] floating enable
+for_window [class="copyq"] floating enable, resize set 600 600
 for_window [class="firefox"] border none
 for_window [class="kitty"] border none
 for_window [class="telegram-desktop"] floating enable
-for_window [title="Blender Preferences" class="Blender"] floating enable
 for_window [class="wezterm"] border none
+for_window [title="Blender Preferences" class="Blender"] floating enable
 # Use pactl to adjust volume in PulseAudio.
 set $refresh_i3status killall -SIGUSR1 i3status
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +2% && $refresh_i3status
