@@ -1,13 +1,18 @@
 #!/bin/bash
 # based on https://faq.i3wm.org/question/5312/how-to-toggle-onoff-external-and-internal-monitors.1.html
-STATE_FILE="~/.config/monitor_mode"
+STATE_FILE=~/.config/monitor_mode
 EXTERNAL_OUTPUT=$(xrandr | grep -v primary | awk '/ connected /{print $1}')
 INTERNAL_OUTPUT=$(xrandr | awk '/ connected primary/{print $1}')
 
+if [ -z $EXTERNAL_OUTPUT ]; then
+  echo "No external display connected."
+  exit 1
+fi
+
+exit 1
 if [ ! -f "${STATE_FILE}" ]; then
   monitor_mode="all"
 else
-# if we don't have a file, start at zero
   monitor_mode=`cat "${STATE_FILE}"`
 fi
 
