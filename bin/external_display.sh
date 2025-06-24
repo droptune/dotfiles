@@ -6,16 +6,16 @@ INTERNAL_OUTPUT=$(xrandr | awk '/ connected primary/{print $1}')
 
 if [ -z $EXTERNAL_OUTPUT ]; then
   echo "No external display connected."
+  xrandr --output $INTERNAL_OUTPUT --auto
+  xset s off -dpms
   exit 1
 fi
 
-exit 1
 if [ ! -f "${STATE_FILE}" ]; then
   monitor_mode="all"
 else
   monitor_mode=`cat "${STATE_FILE}"`
 fi
-
 
 if [ $monitor_mode = "all" ]; then
         monitor_mode="EXTERNAL"
@@ -30,5 +30,6 @@ else
         monitor_mode="all"
         xrandr --output $INTERNAL_OUTPUT --auto --output $EXTERNAL_OUTPUT --auto --left-of $INTERNAL_OUTPUT
 fi
+xset s off -dpms
 echo "Current mode is ${monitor_mode}"
 echo "${monitor_mode}" > "${STATE_FILE}"
