@@ -4,7 +4,7 @@ local act = wezterm.action
 
 local config = wezterm.config_builder()
 
-config.color_scheme = 'Tomorrow Night'
+config.color_scheme = 'flexoki-dark'
 config.window_background_gradient = {
   orientation = 'Vertical',
   colors = {

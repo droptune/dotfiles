@@ -61,6 +61,11 @@ local plugins = {
     end
   },
   {
+    "nvim-neotest/nvim-nio",
+    init = function()
+    end
+  },
+  {
     "mfussenegger/nvim-dap-python",
     ft = "python",
     dependencies = {
