@@ -89,6 +89,7 @@
         - lxappearance
         - make
         - mediainfo
+        - mpv
         - mupdf
         - neovim
         - nitrogen    # wallpaper manager
@@ -104,6 +105,7 @@
         - rofi-pass
         - rsync
         - sxiv
+        - tailspin
         - tasks
         - tealdeer
         - thunar

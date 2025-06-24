@@ -27,6 +27,7 @@
     - fd                      # alternative to 'find'
     - i3-wm
     - ifuse
+    - k9s
     - libimobiledevice
     - libplist
     - python-neovim
