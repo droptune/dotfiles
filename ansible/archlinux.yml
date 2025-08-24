@@ -39,6 +39,8 @@
     - tumbler
     - usbmuxd
     - virtualbox
+    - vlc
+    - vlc-plugins-all
     - wireshark-qt
     - xorg-xinput
     - zathura

@@ -63,7 +63,7 @@ floating_modifier $mod
 
 bindsym $mod+Return exec wezterm
 bindsym $mod+n exec GTK_THEME=Nordic:polar thunar
-bindsym $mod+b exec brave
+bindsym $mod+b exec zen-browser
 
 # kill focused window
 bindsym $mod+Shift+q kill
