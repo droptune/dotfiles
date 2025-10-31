@@ -1,5 +1,11 @@
 local plugins = {
   {
+    "stevearc/conform.nvim",
+    event = "BufWritePre", -- uncomment for format on save
+    ft = { "go", "python" },
+    opts = require "configs.conform",
+  },
+  {
     "williamboman/mason.nvim",
     opts = {
       ensure_installed = {
@@ -20,7 +26,7 @@ local plugins = {
   },
   {
     "mustache/vim-mustache-handlebars",
-    ft = {"mustache"}
+    ft = { "mustache" },
   },
   {
     "neovim/nvim-lspconfig",
@@ -57,13 +63,11 @@ local plugins = {
   },
   {
     "mfussenegger/nvim-dap",
-    init = function()
-    end
+    init = function() end,
   },
   {
     "nvim-neotest/nvim-nio",
-    init = function()
-    end
+    init = function() end,
   },
   {
     "mfussenegger/nvim-dap-python",
@@ -81,8 +85,8 @@ local plugins = {
     "rcarriga/nvim-dap-ui",
     dependencies = "mfussenegger/nvim-dap",
     config = function()
-      local dap = require("dap")
-      local dapui = require("dapui")
+      local dap = require "dap"
+      local dapui = require "dapui"
       dapui.setup()
       dap.listeners.after.event_initialized["dapui_config"] = function()
         dapui.open()
@@ -93,7 +97,7 @@ local plugins = {
       dap.listeners.after.event_exited["dapui_config"] = function()
         dapui.close()
       end
-    end
+    end,
   },
   {
     "leoluz/nvim-dap-go",
@@ -101,21 +105,14 @@ local plugins = {
     dependencies = "mfussenegger/nvim-dap",
     config = function(_, opts)
       require("dap-go").setup(opts)
-    end
-  },
-  {
-    "nvimtools/none-ls.nvim",
-    ft = {"go", "python"},
-    opts = function()
-      return require "configs.null-ls"
     end,
   },
   {
     "rust-lang/rust.vim",
     ft = "rust",
-    init = function ()
+    init = function()
       vim.g.rustfmt_autosave = 1
-    end
+    end,
   },
   {
     "simrat39/rust-tools.nvim",
@@ -125,14 +122,14 @@ local plugins = {
       return require "configs.rust-tools"
     end,
     config = function(_, opts)
-      require('rust-tools').setup(opts)
-    end
+      require("rust-tools").setup(opts)
+    end,
   },
   {
-    'saecki/crates.nvim',
-    ft = {"rust", "toml"},
+    "saecki/crates.nvim",
+    ft = { "rust", "toml" },
     config = function(_, opts)
-      local crates = require('crates')
+      local crates = require "crates"
       crates.setup(opts)
       crates.show()
     end,
@@ -141,17 +138,17 @@ local plugins = {
     "hrsh7th/nvim-cmp",
     opts = function()
       local M = require "nvchad.configs.cmp"
-      table.insert(M.sources, {name = "crates"})
+      table.insert(M.sources, { name = "crates" })
       return M
     end,
   },
   {
     "ntpeters/vim-better-whitespace",
     lazy = false,
-    config = function ()
-      vim.cmd[[EnableWhitespace]]
+    config = function()
+      vim.cmd [[EnableWhitespace]]
     end,
-  }
+  },
 }
 
 return plugins
