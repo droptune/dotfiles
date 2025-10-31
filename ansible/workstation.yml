@@ -63,7 +63,6 @@
         - btop
         - clang
         - cmake
-        - copyq
         - cryptsetup
         - ctags
         - curl
@@ -96,6 +95,7 @@
         - ntfs-3g
         - openvpn
         - pass
+        - parcellite
         - pipewire-pulse
         - picom
         - polybar
@@ -104,6 +104,7 @@
         - rofi
         - rofi-pass
         - rsync
+        - shotwell
         - sxiv
         - tailspin
         - tealdeer
