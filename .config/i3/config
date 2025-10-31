@@ -20,7 +20,7 @@ exec --no-startup-id xset -dpms
 
 exec_always --no-startup-id $HOME/.config/polybar/launch.sh
 exec_always --no-startup-id /usr/bin/picom -b
-exec_always --no-startup-id /usr/bin/copyq
+exec_always --no-startup-id /usr/bin/parcellite
 
 exec --no-startup-id $HOME/bin/brightness restore
 
@@ -37,7 +37,7 @@ smart_borders on
 for_window [class="Brave-browser"] border none
 for_window [class="Navigator"] border none
 for_window [class="TelegramDesktop"] floating enable
-for_window [class="copyq"] floating enable, resize set 600 600
+# for_window [class="parcellite"] floating enable, resize set 600 600
 for_window [class="firefox"] border none
 for_window [class="kitty"] border none
 for_window [class="telegram-desktop"] floating enable
