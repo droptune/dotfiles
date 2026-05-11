@@ -112,11 +112,14 @@
         - tmux
         - unbound
         - vifm
+        - virt-manager
         - wezterm
         - which
         - xorg-xrandr
         - yazi
         - yq
+        - libvirt
+        - qemu-desktop
       tags: packages
 
     - name: Install for other than SuSe
@@ -217,7 +220,7 @@
 
     - name: Check if NvChad is installed
       ansible.builtin.stat:
-        path: /home/pixelduck/.config/nvim/lua/core
+        path: /home/{{ ansible_user_id }}/.config/nvim/lua/core
       register: nvchad_dir_path
       when: with_nvchad
 
@@ -486,6 +489,12 @@
         name: fstrim.timer
         enabled: true
         state: started
+
+    - name: Add user to necessary groups
+      ansible.builtin.user:
+        name: "{{ ansible_user_id }}"
+        groups: docker, libvirt
+        append: yes
 
   handlers:
     - name: Update font cache
